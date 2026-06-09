@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Aset & KPI</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome untuk Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- HALAMAN LOGIN -->
+    <div id="login-page" class="page active">
+        <div class="login-box">
+            <h2><i class="fa-solid fa-boxes-stacked"></i> Asset System</h2>
+            <p>Masuk untuk mengakses sistem</p>
+            <form id="login-form">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="username" required placeholder="Masukkan username">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" required placeholder="Masukkan password">
+                </div>
+                <button type="submit" id="btn-login">Masuk <i class="fa-solid fa-arrow-right"></i></button>
+                <p id="login-msg" class="msg-error"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- HALAMAN UTAMA (DASHBOARD) -->
+    <div id="main-app" class="page hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fa-solid fa-boxes-stacked"></i> AssetSys
+            </div>
+            <nav>
+                <a href="#" class="nav-link active" data-target="dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                <a href="#" class="nav-link" data-target="inventory"><i class="fa-solid fa-laptop"></i> Inventory</a>
+                <a href="#" class="nav-link" data-target="borrowings"><i class="fa-solid fa-hand-holding-hand"></i> Peminjaman</a>
+                <a href="#" class="nav-link" data-target="dailylogs"><i class="fa-solid fa-clipboard-check"></i> Daily Logs</a>
+                <a href="#" class="nav-link" id="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Keluar</a>
+            </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="content">
+            <header>
+                <h2 id="page-title">Dashboard KPI</h2>
+                <div class="user-info">
+                    <span id="user-display-name">User</span>
+                    <span id="user-role" class="badge">Role</span>
+                </div>
+            </header>
+
+            <!-- SECTION: DASHBOARD -->
+            <section id="dashboard" class="tab-content active">
+                <div class="kpi-grid">
+                    <div class="card kpi-card">
+                        <h3>MOHH Utilization</h3>
+                        <div class="value" id="kpi-mohh-percent">0%</div>
+                        <p id="kpi-mohh-detail">Actual: 0 / Total: 0 Jam</p>
+                    </div>
+                    <div class="card kpi-card">
+                        <h3>PM Compliance</h3>
+                        <div class="value" id="kpi-pm-percent">0%</div>
+                        <p id="kpi-pm-detail">Selesai: 0 / Target: 0</p>
+                    </div>
+                    <div class="card kpi-card">
+                        <h3>Total Aset Aktif</h3>
+                        <div class="value" id="kpi-assets-count">0</div>
+                        <p>Unit dalam kondisi 'In Use'</p>
+                    </div>
+                </div>
+                <div class="card mt-20">
+                    <h3>Info Periode</h3>
+                    <p id="current-period-label">Memuat periode...</p>
+                </div>
+            </section>
+
+            <!-- SECTION: INVENTORY (Placeholder) -->
+            <section id="inventory" class="tab-content hidden">
+                <div class="card">
+                    <h3>Daftar Aset</h3>
+                    <button class="btn-primary" onclick="alert('Fitur Tambah Aset akan segera hadir!')">+ Tambah Aset</button>
+                    <div class="table-responsive mt-20">
+                        <table id="table-inventory">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Asset Tag</th>
+                                    <th>Type</th>
+                                    <th>Assigned To</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody><!-- Data dimuat via JS --></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: BORROWINGS (Placeholder) -->
+            <section id="borrowings" class="tab-content hidden">
+                <div class="card">
+                    <h3>Riwayat Peminjaman</h3>
+                    <p>Modul peminjaman sedang dalam pengembangan.</p>
+                </div>
+            </section>
+
+            <!-- SECTION: DAILY LOGS (Placeholder) -->
+            <section id="dailylogs" class="tab-content hidden">
+                <div class="card">
+                    <h3>Input Aktivitas Harian</h3>
+                    <p>Form input daily logs akan muncul di sini.</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
