@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - IT Command Center</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Container Sidebar -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <main class="content">
+        <header class="top-bar">
+            <div class="breadcrumb">Home / <span class="current-page">Dashboard Overview</span></div>
+            <div class="top-actions">
+                <button class="icon-btn"><i class="fa-solid fa-gear"></i></button>
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge-dot"></span></button>
+            </div>
+        </header>
+
+        <!-- KONTEN KHUSUS DASHBOARD -->
+        <div id="page-content">
+            <div class="welcome-banner">
+                <h1>Welcome back, <span id="user-role-display">User</span></h1>
+                <p>Here is the latest status of your IT DSE Operations.</p>
+            </div>
+            
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon blue"><i class="fa-solid fa-database"></i></div>
+                    <div class="kpi-info"><h3>Total Assets</h3><div class="value" id="val-total-assets">...</div><div class="sub">IT devices in system</div></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon orange"><i class="fa-solid fa-wrench"></i></div>
+                    <div class="kpi-info"><h3>Active Maintenance</h3><div class="value" id="val-active-maint">...</div><div class="sub">Pending PM tasks</div></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon green"><i class="fa-regular fa-clock"></i></div>
+                    <div class="kpi-info"><h3>Pending PM (Juni)</h3><div class="value" id="val-pending-pm">...</div><div class="sub">For the current month</div></div>
+                </div>
+            </div>
+            <!-- Tambahkan baris kartu lainnya sesuai desain -->
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        // Script khusus untuk load data dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            initPage('dashboard'); // Fungsi ini ada di script.js
+            
+            // Contoh load data real-time dari GAS
+            const token = localStorage.getItem('asset_token');
+            if(token) {
+                fetch(`${APPS_SCRIPT_URL}?action=getKPIData&token=${token}`)
+                .then(r => r.json())
+                .then(res => {
+                    if(res.success) {
+                        document.getElementById('val-total-assets').textContent = res.data.unitsInUse || 0;
+                        // Update data lainnya...
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
