@@ -28,40 +28,51 @@ function initLoginPage() {
 
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
+        
         const btn = document.getElementById('btn-login');
         const msg = document.getElementById('login-msg');
         const originalText = 'Sign In';
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+
+        // Validasi sederhana
+        if (!username || !password) {
+            msg.textContent = 'Username dan Password wajib diisi!';
+            return;
+        }
 
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connecting...';
         msg.textContent = '';
 
         try {
-            const res = await fetch(APPS_SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    action: 'login',
-                    username: document.getElementById('username').value.trim(),
-                    password: document.getElementById('password').value
-                })
+            // Trik Bypass CORS: Gunakan GET dengan parameter URL
+            // GAS akan tetap membaca ini sebagai request login
+            const url = `${APPS_SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+            
+            const res = await fetch(url, {
+                method: 'GET', // Ubah jadi GET untuk hindari preflight CORS
+                redirect: 'follow' 
             });
 
             if (!res.ok) throw new Error(`Server error: ${res.status}`);
+            
             const data = await res.json();
 
             if (data.success) {
                 localStorage.setItem('asset_token', data.token);
                 localStorage.setItem('asset_user', JSON.stringify(data.user));
+                
+                // Redirect ke dashboard
                 window.location.href = 'dashboard.html';
             } else {
-                msg.textContent = data.message || 'Invalid credentials';
+                msg.textContent = data.message || 'Login gagal. Cek username/password.';
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             }
         } catch (err) {
             console.error('Login Error:', err);
-            msg.textContent = 'Connection failed. Please check network.';
+            msg.textContent = 'Gagal terhubung ke server. Pastikan URL GAS benar.';
             btn.disabled = false;
             btn.innerHTML = originalText;
         }
