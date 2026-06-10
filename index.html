@@ -67,6 +67,45 @@
         </main>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Di dalam index.html -->
+<script>
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx.../exec'; // Ganti URL GAS kamu
+
+    document.getElementById('login-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btn-login');
+        const msg = document.getElementById('login-msg');
+        
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
+        msg.textContent = '';
+
+        try {
+            const res = await fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'login',
+                    username: document.getElementById('username').value,
+                    password: document.getElementById('password').value
+                })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                // Simpan token & data user
+                localStorage.setItem('asset_token', data.token);
+                localStorage.setItem('asset_user', JSON.stringify(data.user));
+                
+                // ✅ REDIRECT KE DASHBOARD.HTML
+                window.location.href = 'dashboard.html';
+            } else {
+                msg.textContent = data.message;
+                btn.innerHTML = 'Sign In';
+            }
+        } catch (err) {
+            msg.textContent = 'Gagal terhubung ke server.';
+            btn.innerHTML = 'Sign In';
+        }
+    });
+</script>
 </body>
 </html>
