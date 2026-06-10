@@ -2,11 +2,11 @@
 const proxyUrl = 'https://corsproxy.io/?'; 
 const targetUrl = `${APPS_SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
 
-const res = await fetch(proxyUrl + encodeURIComponent(targetUrl), {
+const res = await fetch(proxyUrl + encodeURIComponent('https://script.google.com/macros/s/AKfycbxxb_RaZ1V4C6jn8QDIiutCjdnVqEahh8w6iGvaH-8-5I_OZfVUF2MTgFFijX0AntlO/exec'), {
     method: 'GET',
     redirect: 'follow'
 });
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxb_RaZ1V4C6jn8QDIiutCjdnVqEahh8w6iGvaH-8-5I_OZfVUF2MTgFFijX0AntlO/exec';
+
 
 // ==========================================
 // DETEKSI HALAMAN SAAT INI
