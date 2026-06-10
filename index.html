@@ -3,109 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT DSE MANAGEMENT</title>
-    
-    <!-- 1. FONT AWESOME (Wajib untuk Ikon) -->
+    <title>Login - IT DSE Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- 2. GOOGLE FONTS (Inter Font agar terlihat modern) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- 3. CSS KITA -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-
-    <!-- LOGIN PAGE (Tetap sama) -->
-    <div id="login-page" class="page active">
-        <div class="login-box">
-            <div class="login-header">
-                <i class="fa-solid fa-layer-group logo-icon-large"></i>
-                <h2>IT DSE MANAGEMENT</h2>
-                <p>ENGINEER V1.0</p>
-            </div>
-            <form id="login-form">
-                <div class="input-group">
-                    <label>Username</label>
-                    <input type="text" id="username" required placeholder="Enter username">
-                </div>
-                <div class="input-group">
-                    <label>Password</label>
-                    <input type="password" id="password" required placeholder="Enter password">
-                </div>
-                <button type="submit" id="btn-login">Sign In</button>
-                <p id="login-msg" class="msg-error"></p>
-            </form>
+<body class="login-body">
+    <div class="login-box">
+        <div class="login-header">
+            <i class="fa-solid fa-layer-group logo-icon-large"></i>
+            <h2>IT DSE MANAGEMENT</h2>
+            <p>ENGINEER V1.0</p>
         </div>
-    </div>
-
-    <!-- MAIN APP -->
-    <div id="main-app" class="page hidden">
-        <!-- Sidebar Container -->
-        <div id="sidebar-container"></div>
-
-        <!-- Main Content Area -->
-        <main class="content">
-            <!-- Top Header Bar -->
-            <header class="top-bar">
-                <div class="breadcrumb">
-                    <span>Home</span> / <span class="current-page">Dashboard Overview</span>
-                </div>
-                <div class="top-actions">
-                    <button class="icon-btn"><i class="fa-solid fa-gear"></i></button>
-                    <button class="icon-btn notification-btn">
-                        <i class="fa-regular fa-bell"></i>
-                        <span class="badge-dot"></span>
-                    </button>
-                </div>
-            </header>
-
-            <!-- Dynamic Content Injection -->
-            <div id="dynamic-content">
-                <!-- Konten Dashboard akan dimuat di sini oleh JS -->
+        <form id="login-form">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required placeholder="Enter username" autocomplete="username">
             </div>
-        </main>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required placeholder="Enter password" autocomplete="current-password">
+            </div>
+            <button type="submit" id="btn-login">Sign In</button>
+            <p id="login-msg" class="msg-error"></p>
+        </form>
     </div>
 
-    <!-- Di dalam index.html -->
-<script>
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxb_RaZ1V4C6jn8QDIiutCjdnVqEahh8w6iGvaH-8-5I_OZfVUF2MTgFFijX0AntlO/exec'; // Ganti URL GAS kamu
-
-    document.getElementById('login-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const btn = document.getElementById('btn-login');
-        const msg = document.getElementById('login-msg');
-        
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
-        msg.textContent = '';
-
-        try {
-            const res = await fetch(APPS_SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: 'login',
-                    username: document.getElementById('username').value,
-                    password: document.getElementById('password').value
-                })
-            });
-            const data = await res.json();
-
-            if (data.success) {
-                // Simpan token & data user
-                localStorage.setItem('asset_token', data.token);
-                localStorage.setItem('asset_user', JSON.stringify(data.user));
-                
-                // ✅ REDIRECT KE DASHBOARD.HTML
-                window.location.href = 'dashboard.html';
-            } else {
-                msg.textContent = data.message;
-                btn.innerHTML = 'Sign In';
-            }
-        } catch (err) {
-            msg.textContent = 'Gagal terhubung ke server.';
-            btn.innerHTML = 'Sign In';
-        }
-    });
-</script>
+    <!-- HANYA LOAD SCRIPT.JS DI SINI -->
+    <script src="script.js"></script>
 </body>
 </html>
