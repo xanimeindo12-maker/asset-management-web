@@ -1,31 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Command Center</title>
+    
+    <!-- 1. FONT AWESOME (Wajib untuk Ikon) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 2. GOOGLE FONTS (Inter Font agar terlihat modern) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- 3. CSS KITA -->
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
-    <!-- HALAMAN LOGIN (Tetap sama) -->
+
+    <!-- LOGIN PAGE (Tetap sama) -->
     <div id="login-page" class="page active">
-        <!-- ... kode login form sebelumnya ... -->
+        <div class="login-box">
+            <div class="login-header">
+                <i class="fa-solid fa-layer-group logo-icon-large"></i>
+                <h2>IT COMMAND CENTER</h2>
+                <p>Operational Hub Login</p>
+            </div>
+            <form id="login-form">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="username" required placeholder="Enter username">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" required placeholder="Enter password">
+                </div>
+                <button type="submit" id="btn-login">Sign In</button>
+                <p id="login-msg" class="msg-error"></p>
+            </form>
+        </div>
     </div>
 
-    <!-- HALAMAN UTAMA -->
+    <!-- MAIN APP -->
     <div id="main-app" class="page hidden">
-        
-        <!-- SIDEBAR AKAN DIMUAT DI SINI SECARA OTOMATIS -->
+        <!-- Sidebar Container -->
         <div id="sidebar-container"></div>
 
-        <!-- KONTEN UTAMA -->
+        <!-- Main Content Area -->
         <main class="content">
-            <header>
-                <h2 id="page-title">Dashboard Overview</h2>
-                <!-- Header kanan bisa ditambahkan nanti -->
+            <!-- Top Header Bar -->
+            <header class="top-bar">
+                <div class="breadcrumb">
+                    <span>Home</span> / <span class="current-page">Dashboard Overview</span>
+                </div>
+                <div class="top-actions">
+                    <button class="icon-btn"><i class="fa-solid fa-gear"></i></button>
+                    <button class="icon-btn notification-btn">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="badge-dot"></span>
+                    </button>
+                </div>
             </header>
 
-            <!-- Area Konten Dinamis -->
+            <!-- Dynamic Content Injection -->
             <div id="dynamic-content">
-                <!-- Konten dashboard default -->
-                <div class="kpi-grid">
-                    <!-- ... kartu KPI sebelumnya ... -->
-                </div>
+                <!-- Konten Dashboard akan dimuat di sini oleh JS -->
             </div>
         </main>
     </div>
 
     <script src="script.js"></script>
 </body>
+</html>
