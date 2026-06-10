@@ -7,10 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentPage = window.location.pathname.split('/').pop();
 
     if (currentPage === 'index.html' || currentPage === '') {
-        // === HALAMAN LOGIN ===
         initLoginPage();
     } else {
-        // === HALAMAN LAIN (Dashboard, Inventory, dll) ===
         initAppPage();
     }
 });
@@ -71,7 +69,7 @@ function initLoginPage() {
 }
 
 // ==========================================
-// LOGIKA KHUSUS HALAMAN APP (Dashboard, dll)
+// LOGIKA KHUSUS HALAMAN APP (Dashboard, Inventory, dll)
 // ==========================================
 function initAppPage() {
     const token = localStorage.getItem('asset_token');
@@ -88,7 +86,7 @@ function initAppPage() {
 }
 
 // ==========================================
-// LOAD SIDEBAR DINAMIS
+// LOAD SIDEBAR DINAMIS + SETUP INTERAKSI
 // ==========================================
 async function loadSidebar(user) {
     const container = document.getElementById('sidebar-container');
@@ -97,17 +95,19 @@ async function loadSidebar(user) {
     try {
         const response = await fetch('sidebar.html');
         if (!response.ok) throw new Error('Sidebar not found');
+        
         container.innerHTML = await response.text();
 
-        // Update info user
+        // Update info user di sidebar
         const nameEl = container.querySelector('.user-info .name');
         const roleEl = container.querySelector('.user-info .role');
         const avatarEl = container.querySelector('.avatar');
+        
         if (nameEl) nameEl.textContent = user.displayName || user.username;
         if (roleEl) roleEl.textContent = user.role || 'USER';
         if (avatarEl) avatarEl.textContent = (user.displayName || user.username || 'U').charAt(0).toUpperCase();
 
-        // Setup logout
+        // Setup tombol logout
         const logoutBtn = container.querySelector('.logout-btn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => {
@@ -116,11 +116,15 @@ async function loadSidebar(user) {
             });
         }
 
-        // Highlight menu aktif
+        // Highlight menu aktif berdasarkan URL
         highlightMenuFromURL();
+        
+        // ✅ PENTING: Setup interaksi dropdown & navigasi SETELAH sidebar dimuat
+        setupSidebarInteractions();
 
     } catch (error) {
         console.error("Sidebar error:", error);
+        container.innerHTML = '<p style="padding:20px;color:red;">Gagal memuat menu.</p>';
     }
 }
 
@@ -130,6 +134,7 @@ async function loadSidebar(user) {
 function highlightMenuFromURL() {
     const currentPage = window.location.pathname.split('/').pop().replace('.html', '') || 'dashboard';
 
+    // Reset semua state aktif
     document.querySelectorAll('.nav-link, .submenu a').forEach(el => {
         el.classList.remove('active', 'active-sub');
     });
@@ -137,9 +142,12 @@ function highlightMenuFromURL() {
         el.classList.remove('open');
     });
 
+    // Cari link yang cocok dengan halaman saat ini
     const activeLink = document.querySelector(`[data-target-file="${currentPage}.html"]`);
+    
     if (activeLink) {
         if (activeLink.closest('.submenu')) {
+            // Jika sub-menu, highlight dia & buka parent dropdown
             activeLink.classList.add('active-sub');
             const parentGroup = activeLink.closest('.nav-group');
             if (parentGroup) {
@@ -148,15 +156,14 @@ function highlightMenuFromURL() {
                 if (toggle) toggle.classList.add('active');
             }
         } else {
+            // Jika menu utama, langsung highlight
             activeLink.classList.add('active');
         }
     }
 }
-// ... (kode sebelumnya tetap sama sampai fungsi highlightMenuFromURL) ...
 
 // ==========================================
-// EVENT LISTENER UNTUK DROPDOWN & NAVIGASI
-// Dipanggil setelah sidebar dimuat
+// SETUP INTERAKSI DROPDOWN & NAVIGASI
 // ==========================================
 function setupSidebarInteractions() {
     // 1. Handle klik pada dropdown toggle
@@ -171,7 +178,8 @@ function setupSidebarInteractions() {
             // Tutup semua dropdown lain
             document.querySelectorAll('.nav-group').forEach(g => {
                 g.classList.remove('open');
-                g.querySelector('.dropdown-toggle').setAttribute('aria-expanded', 'false');
+                const otherToggle = g.querySelector('.dropdown-toggle');
+                if (otherToggle) otherToggle.setAttribute('aria-expanded', 'false');
             });
             
             // Toggle dropdown yang diklik
@@ -179,27 +187,25 @@ function setupSidebarInteractions() {
                 group.classList.add('open');
                 this.setAttribute('aria-expanded', 'true');
                 
-                // Opsional: Langsung arahkan ke sub-item pertama
+                // Langsung arahkan ke sub-item pertama
                 const firstSubLink = group.querySelector('.submenu a');
                 if (firstSubLink) {
-                    // Simulasikan klik pada sub-item pertama
                     window.location.href = firstSubLink.href;
                 }
             }
         });
     });
 
-    // 2. Handle klik pada link submenu (agar tidak reload jika tidak perlu)
+    // 2. Handle klik pada link submenu (biarkan navigasi normal)
     const submenuLinks = document.querySelectorAll('.submenu a');
     submenuLinks.forEach(link => {
         link.addEventListener('click', function(e) {
-            // Biarkan browser melakukan navigasi normal ke href
-            // Tapi pastikan highlight akan terjadi di halaman tujuan
-            // (highlightMenuFromURL akan dipanggil saat halaman baru dimuat)
+            // Biarkan browser navigasi ke href
+            // highlightMenuFromURL() akan dipanggil di halaman tujuan
         });
     });
 
-    // 3. Handle klik pada link utama (non-dropdown)
+    // 3. Handle klik pada link utama non-dropdown
     const mainLinks = document.querySelectorAll('.nav-link:not(.dropdown-toggle)');
     mainLinks.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -207,46 +213,3 @@ function setupSidebarInteractions() {
         });
     });
 }
-
-// ==========================================
-// UPDATE FUNGSI loadSidebar()
-// Tambahkan panggilan setupSidebarInteractions()
-// ==========================================
-async function loadSidebar(user) {
-    const container = document.getElementById('sidebar-container');
-    if (!container) return;
-
-    try {
-        const response = await fetch('sidebar.html');
-        if (!response.ok) throw new Error('Sidebar not found');
-        container.innerHTML = await response.text();
-
-        // Update info user
-        const nameEl = container.querySelector('.user-info .name');
-        const roleEl = container.querySelector('.user-info .role');
-        const avatarEl = container.querySelector('.avatar');
-        if (nameEl) nameEl.textContent = user.displayName || user.username;
-        if (roleEl) roleEl.textContent = user.role || 'USER';
-        if (avatarEl) avatarEl.textContent = (user.displayName || user.username || 'U').charAt(0).toUpperCase();
-
-        // Setup logout
-        const logoutBtn = container.querySelector('.logout-btn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', () => {
-                localStorage.clear();
-                window.location.href = 'index.html';
-            });
-        }
-
-        // Highlight menu aktif
-        highlightMenuFromURL();
-        
-        // ✅ PENTING: Setup interaksi sidebar SETELAH dimuat
-        setupSidebarInteractions();
-
-    } catch (error) {
-        console.error("Sidebar error:", error);
-    }
-}
-
-// ... (fungsi highlightMenuFromURL tetap sama) ...
