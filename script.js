@@ -152,3 +152,101 @@ function highlightMenuFromURL() {
         }
     }
 }
+// ... (kode sebelumnya tetap sama sampai fungsi highlightMenuFromURL) ...
+
+// ==========================================
+// EVENT LISTENER UNTUK DROPDOWN & NAVIGASI
+// Dipanggil setelah sidebar dimuat
+// ==========================================
+function setupSidebarInteractions() {
+    // 1. Handle klik pada dropdown toggle
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault(); // Mencegah reload halaman
+            
+            const group = this.closest('.nav-group');
+            const isOpen = group.classList.contains('open');
+            
+            // Tutup semua dropdown lain
+            document.querySelectorAll('.nav-group').forEach(g => {
+                g.classList.remove('open');
+                g.querySelector('.dropdown-toggle').setAttribute('aria-expanded', 'false');
+            });
+            
+            // Toggle dropdown yang diklik
+            if (!isOpen) {
+                group.classList.add('open');
+                this.setAttribute('aria-expanded', 'true');
+                
+                // Opsional: Langsung arahkan ke sub-item pertama
+                const firstSubLink = group.querySelector('.submenu a');
+                if (firstSubLink) {
+                    // Simulasikan klik pada sub-item pertama
+                    window.location.href = firstSubLink.href;
+                }
+            }
+        });
+    });
+
+    // 2. Handle klik pada link submenu (agar tidak reload jika tidak perlu)
+    const submenuLinks = document.querySelectorAll('.submenu a');
+    submenuLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Biarkan browser melakukan navigasi normal ke href
+            // Tapi pastikan highlight akan terjadi di halaman tujuan
+            // (highlightMenuFromURL akan dipanggil saat halaman baru dimuat)
+        });
+    });
+
+    // 3. Handle klik pada link utama (non-dropdown)
+    const mainLinks = document.querySelectorAll('.nav-link:not(.dropdown-toggle)');
+    mainLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Biarkan navigasi normal
+        });
+    });
+}
+
+// ==========================================
+// UPDATE FUNGSI loadSidebar()
+// Tambahkan panggilan setupSidebarInteractions()
+// ==========================================
+async function loadSidebar(user) {
+    const container = document.getElementById('sidebar-container');
+    if (!container) return;
+
+    try {
+        const response = await fetch('sidebar.html');
+        if (!response.ok) throw new Error('Sidebar not found');
+        container.innerHTML = await response.text();
+
+        // Update info user
+        const nameEl = container.querySelector('.user-info .name');
+        const roleEl = container.querySelector('.user-info .role');
+        const avatarEl = container.querySelector('.avatar');
+        if (nameEl) nameEl.textContent = user.displayName || user.username;
+        if (roleEl) roleEl.textContent = user.role || 'USER';
+        if (avatarEl) avatarEl.textContent = (user.displayName || user.username || 'U').charAt(0).toUpperCase();
+
+        // Setup logout
+        const logoutBtn = container.querySelector('.logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            });
+        }
+
+        // Highlight menu aktif
+        highlightMenuFromURL();
+        
+        // ✅ PENTING: Setup interaksi sidebar SETELAH dimuat
+        setupSidebarInteractions();
+
+    } catch (error) {
+        console.error("Sidebar error:", error);
+    }
+}
+
+// ... (fungsi highlightMenuFromURL tetap sama) ...
