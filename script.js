@@ -1,102 +1,154 @@
-const APPS_SCRIPT_URL = 'YOUR_GAS_WEB_APP_URL_HERE';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxb_RaZ1V4C6jn8QDIiutCjdnVqEahh8w6iGvaH-8-5I_OZfVUF2MTgFFijX0AntlO/exec';
 
-// 1. FUNGSI INISIALISASI HALAMAN (Panggil ini di setiap halaman HTML)
-function initPage(activePageId) {
-    // Cek Session
+// ==========================================
+// DETEKSI HALAMAN SAAT INI
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const currentPage = window.location.pathname.split('/').pop();
+
+    if (currentPage === 'index.html' || currentPage === '') {
+        // === HALAMAN LOGIN ===
+        initLoginPage();
+    } else {
+        // === HALAMAN LAIN (Dashboard, Inventory, dll) ===
+        initAppPage();
+    }
+});
+
+// ==========================================
+// LOGIKA KHUSUS HALAMAN LOGIN
+// ==========================================
+function initLoginPage() {
+    // Auto redirect jika sudah login
+    if (localStorage.getItem('asset_token') && localStorage.getItem('asset_user')) {
+        window.location.href = 'dashboard.html';
+        return;
+    }
+
+    const form = document.getElementById('login-form');
+    if (!form) return;
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btn-login');
+        const msg = document.getElementById('login-msg');
+        const originalText = 'Sign In';
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+        msg.textContent = '';
+
+        try {
+            const res = await fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'login',
+                    username: document.getElementById('username').value.trim(),
+                    password: document.getElementById('password').value
+                })
+            });
+
+            if (!res.ok) throw new Error(`Server error: ${res.status}`);
+            const data = await res.json();
+
+            if (data.success) {
+                localStorage.setItem('asset_token', data.token);
+                localStorage.setItem('asset_user', JSON.stringify(data.user));
+                window.location.href = 'dashboard.html';
+            } else {
+                msg.textContent = data.message || 'Invalid credentials';
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        } catch (err) {
+            console.error('Login Error:', err);
+            msg.textContent = 'Connection failed. Please check network.';
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+    });
+}
+
+// ==========================================
+// LOGIKA KHUSUS HALAMAN APP (Dashboard, dll)
+// ==========================================
+function initAppPage() {
     const token = localStorage.getItem('asset_token');
     const userStr = localStorage.getItem('asset_user');
-    
+
+    // Redirect ke login jika belum login
     if (!token || !userStr) {
-        window.location.href = 'index.html'; // Redirect ke login jika belum login
+        window.location.href = 'index.html';
         return;
     }
 
     const user = JSON.parse(userStr);
-    
-    // Load Sidebar
-    loadSidebar(activePageId, user);
-    
-    // Update nama user di sidebar jika perlu
-    const nameEl = document.querySelector('.user-info .name');
-    if(nameEl) nameEl.textContent = user.displayName || user.username;
+    loadSidebar(user);
 }
 
-// 2. FUNGSI LOAD SIDEBAR DINAMIS
-async function loadSidebar(activePageId, user) {
+// ==========================================
+// LOAD SIDEBAR DINAMIS
+// ==========================================
+async function loadSidebar(user) {
+    const container = document.getElementById('sidebar-container');
+    if (!container) return;
+
     try {
         const response = await fetch('sidebar.html');
-        const html = await response.text();
-        document.getElementById('sidebar-container').innerHTML = html;
-        
-        // Highlight menu yang aktif
-        highlightMenu(activePageId);
-        
-        // Setup Logout
-        document.querySelector('.logout-btn').addEventListener('click', () => {
-            localStorage.clear();
-            window.location.href = 'index.html';
-        });
+        if (!response.ok) throw new Error('Sidebar not found');
+        container.innerHTML = await response.text();
+
+        // Update info user
+        const nameEl = container.querySelector('.user-info .name');
+        const roleEl = container.querySelector('.user-info .role');
+        const avatarEl = container.querySelector('.avatar');
+        if (nameEl) nameEl.textContent = user.displayName || user.username;
+        if (roleEl) roleEl.textContent = user.role || 'USER';
+        if (avatarEl) avatarEl.textContent = (user.displayName || user.username || 'U').charAt(0).toUpperCase();
+
+        // Setup logout
+        const logoutBtn = container.querySelector('.logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            });
+        }
+
+        // Highlight menu aktif
+        highlightMenuFromURL();
 
     } catch (error) {
         console.error("Sidebar error:", error);
     }
 }
 
-// 3. FUNGSI HIGHLIGHT MENU
-function highlightMenu(pageId) {
-    // Reset semua active state
+// ==========================================
+// HIGHLIGHT MENU BERDASARKAN URL
+// ==========================================
+function highlightMenuFromURL() {
+    const currentPage = window.location.pathname.split('/').pop().replace('.html', '') || 'dashboard';
+
     document.querySelectorAll('.nav-link, .submenu a').forEach(el => {
         el.classList.remove('active', 'active-sub');
     });
-    document.querySelectorAll('.nav-group').forEach(el => el.classList.remove('open'));
+    document.querySelectorAll('.nav-group').forEach(el => {
+        el.classList.remove('open');
+    });
 
-    // Cari link yang cocok dengan pageId
-    const activeLink = document.querySelector(`[data-page="${pageId}"]`);
-    
+    const activeLink = document.querySelector(`[data-target-file="${currentPage}.html"]`);
     if (activeLink) {
-        // Jika dia sub-menu
         if (activeLink.closest('.submenu')) {
             activeLink.classList.add('active-sub');
             const parentGroup = activeLink.closest('.nav-group');
-            parentGroup.classList.add('open'); // Buka dropdownnya
-            parentGroup.querySelector('.dropdown-toggle').classList.add('active');
-        } 
-        // Jika dia menu utama (seperti Dashboard)
-        else {
+            if (parentGroup) {
+                parentGroup.classList.add('open');
+                const toggle = parentGroup.querySelector('.dropdown-toggle');
+                if (toggle) toggle.classList.add('active');
+            }
+        } else {
             activeLink.classList.add('active');
         }
     }
 }
-// Fungsi untuk highlight menu berdasarkan URL saat ini
-function highlightMenuFromURL() {
-    const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
-    
-    // Reset semua
-    document.querySelectorAll('.nav-link, .submenu a').forEach(el => {
-        el.classList.remove('active', 'active-sub');
-    });
-    document.querySelectorAll('.nav-group').forEach(el => el.classList.remove('open'));
-
-    // Cari link yang cocok dengan nama file
-    const link = document.querySelector(`[data-target-file="${currentPage}.html"]`);
-    if (link) {
-        link.classList.add('active');
-        
-        // Jika dia sub-menu, buka parent-nya
-        if (link.closest('.submenu')) {
-            const group = link.closest('.nav-group');
-            group.classList.add('open');
-            group.querySelector('.dropdown-toggle').classList.add('active');
-            link.classList.add('active-sub');
-        }
-    }
-}
-
-// Panggil di DOMContentLoaded
-document.addEventListener('DOMContentLoaded', () => {
-    // Load sidebar dulu
-    loadSidebar();
-    
-    // Lalu highlight menu berdasarkan halaman yang sedang dibuka
-    setTimeout(highlightMenuFromURL, 100);
-});
