@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // LOGIKA KHUSUS HALAMAN LOGIN
 // ==========================================
 function initLoginPage() {
-    // Auto redirect jika sudah login
     if (localStorage.getItem('asset_token') && localStorage.getItem('asset_user')) {
         window.location.href = 'dashboard.html';
         return;
@@ -35,7 +34,6 @@ function initLoginPage() {
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
 
-        // Validasi sederhana
         if (!username || !password) {
             msg.textContent = 'Username dan Password wajib diisi!';
             return;
@@ -46,12 +44,11 @@ function initLoginPage() {
         msg.textContent = '';
 
         try {
-            // Trik Bypass CORS: Gunakan GET dengan parameter URL
-            // GAS akan tetap membaca ini sebagai request login
+            // ✅ TRIK BYPASS CORS: Gunakan GET dengan parameter URL
             const url = `${APPS_SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
             
             const res = await fetch(url, {
-                method: 'GET', // Ubah jadi GET untuk hindari preflight CORS
+                method: 'GET', // Ubah jadi GET
                 redirect: 'follow' 
             });
 
@@ -62,11 +59,9 @@ function initLoginPage() {
             if (data.success) {
                 localStorage.setItem('asset_token', data.token);
                 localStorage.setItem('asset_user', JSON.stringify(data.user));
-                
-                // Redirect ke dashboard
                 window.location.href = 'dashboard.html';
             } else {
-                msg.textContent = data.message || 'Login gagal. Cek username/password.';
+                msg.textContent = data.message || 'Login gagal.';
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             }
