@@ -1,0 +1,90 @@
+<!-- sidebar.html -->
+<aside class="sidebar">
+    <div class="brand">
+        <div class="logo-icon">
+            <!-- Ikon Hexagon Sederhana -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+        </div>
+        <div class="brand-text">
+            <h2>IT COMMAND<br>CENTER</h2>
+            <span>OPERATIONAL HUB</span>
+        </div>
+    </div>
+
+    <nav class="menu-container">
+        <!-- 1. Dashboard Overview -->
+        <a href="#" class="nav-link active" data-page="dashboard">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard Overview</span>
+        </a>
+
+        <!-- 2. Inventory & Assets (Dropdown) -->
+        <div class="nav-group">
+            <button class="nav-link dropdown-toggle" data-group="inventory">
+                <div class="link-content">
+                    <i class="fa-solid fa-box-open"></i>
+                    <span>Inventory & Assets</span>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow"></i>
+            </button>
+            <ul class="submenu" id="sub-inventory">
+                <li><a href="#" data-page="all-assets" class="active-sub">Semua Aset List</a></li>
+                <li><a href="#" data-page="spare-parts">Suku Cadang/Part</a></li>
+                <li><a href="#" data-page="borrowing">Peminjaman Aset</a></li>
+            </ul>
+        </div>
+
+        <!-- 3. Operational Activity (Dropdown) -->
+        <div class="nav-group">
+            <button class="nav-link dropdown-toggle" data-group="operational">
+                <div class="link-content">
+                    <i class="fa-solid fa-briefcase"></i>
+                    <span>Operational Activity</span>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow"></i>
+            </button>
+            <ul class="submenu" id="sub-operational">
+                <li><a href="#" data-page="daily-logs">Daily Activity Logs</a></li>
+                <li><a href="#" data-page="maintenance-schedule">Jadwal Maintenance</a></li>
+                <li><a href="#" data-page="pa-kpi">PA Performance KPI</a></li>
+            </ul>
+        </div>
+
+        <!-- 4. Report Activity (Dropdown) -->
+        <div class="nav-group">
+            <button class="nav-link dropdown-toggle" data-group="report">
+                <div class="link-content">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span>Report Activity</span>
+                </div>
+                <i class="fa-solid fa-chevron-down arrow"></i>
+            </button>
+            <ul class="submenu" id="sub-report">
+                <li><a href="#" data-page="evidence">Evidence Activity</a></li>
+                <li><a href="#" data-page="vendor-population">Populasi Vendor Unit</a></li>
+                <li><a href="#" data-page="unit-distribution">Status Sebaran Unit</a></li>
+                <li><a href="#" data-page="pica">PICA</a></li>
+            </ul>
+        </div>
+
+        <!-- 5. Kelola Tim -->
+        <a href="#" class="nav-link" data-page="team-management">
+            <i class="fa-solid fa-users"></i>
+            <span>Kelola Tim</span>
+        </a>
+    </nav>
+
+    <!-- User Profile Bottom -->
+    <div class="user-profile">
+        <div class="avatar">A</div>
+        <div class="user-info">
+            <span class="name">Administrator</span>
+            <span class="role">ADMINISTRATOR</span>
+        </div>
+        <button class="logout-btn" onclick="handleLogout()">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+    </div>
+</aside>
