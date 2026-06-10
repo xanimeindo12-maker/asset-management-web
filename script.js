@@ -223,3 +223,100 @@ function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
     document.getElementById(pageId).classList.remove('hidden');
 }
+// Fungsi untuk merender Dashboard Overview (Sesuai Gambar 1)
+function renderDashboard() {
+    return `
+        <div class="welcome-banner">
+            <h1>Welcome back, Desktop Support Engineer</h1>
+            <p>Here is the latest status of your IT DSE Operations.</p>
+        </div>
+
+        <div class="kpi-grid">
+            <!-- Card 1: Total Assets -->
+            <div class="kpi-card">
+                <div class="kpi-icon blue"><i class="fa-solid fa-database"></i></div>
+                <div class="kpi-info">
+                    <h3>Total Assets</h3>
+                    <div class="value">181</div>
+                    <div class="sub">IT devices in system</div>
+                </div>
+            </div>
+
+            <!-- Card 2: Active Maintenance -->
+            <div class="kpi-card">
+                <div class="kpi-icon orange"><i class="fa-solid fa-wrench"></i></div>
+                <div class="kpi-info">
+                    <h3>Active Maintenance</h3>
+                    <div class="value">3</div>
+                    <div class="sub">Pending PM tasks</div>
+                </div>
+            </div>
+
+            <!-- Card 3: Pending PM -->
+            <div class="kpi-card">
+                <div class="kpi-icon green"><i class="fa-regular fa-clock"></i></div>
+                <div class="kpi-info">
+                    <h3>Pending PM (Juni)</h3>
+                    <div class="value">3</div>
+                    <div class="sub">For the current month</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="kpi-grid">
+            <!-- Row 2 Cards -->
+            <div class="kpi-card" style="justify-content: space-between;">
+                <div class="kpi-info">
+                    <h3>Assets In Use</h3>
+                    <div class="value">176</div>
+                </div>
+                <span class="status-badge active">Active</span>
+            </div>
+
+            <div class="kpi-card" style="justify-content: space-between;">
+                <div class="kpi-info">
+                    <h3>Assets In Stok</h3>
+                    <div class="value">4</div>
+                </div>
+                <span class="status-badge available">Available</span>
+            </div>
+
+            <div class="kpi-card" style="justify-content: space-between;">
+                <div class="kpi-info">
+                    <h3>Total Breakdown</h3>
+                    <div class="value">1</div>
+                </div>
+                <span class="status-badge urgent">Urgent</span>
+            </div>
+        </div>
+        
+        <div class="kpi-grid" style="grid-template-columns: 1fr 1fr;">
+             <div class="kpi-card" style="justify-content: space-between;">
+                <div class="kpi-info">
+                    <h3>Expiring Warranty</h3>
+                    <div class="value">0</div>
+                </div>
+                <span class="status-badge" style="background:#fef3c7; color:#d97706">Action Req.</span>
+            </div>
+             <div class="kpi-card" style="justify-content: space-between;">
+                <div class="kpi-info">
+                    <h3>Avg Weekly PA</h3>
+                    <div class="value">100.00%</div>
+                </div>
+                <span class="status-badge" style="background:#f3f4f6; color:#4b5563">Overall</span>
+            </div>
+        </div>
+    `;
+}
+
+// Update fungsi navigateToPage di script.js sebelumnya
+function navigateToPage(pageId, title) {
+    document.querySelector('.current-page').textContent = title;
+    const contentDiv = document.getElementById('dynamic-content');
+    
+    if (pageId === 'dashboard') {
+        contentDiv.innerHTML = renderDashboard();
+    } else {
+        contentDiv.innerHTML = `<div class="welcome-banner"><h1>${title}</h1><p>Halaman ini sedang dalam pengembangan.</p></div>`;
+    }
+}
