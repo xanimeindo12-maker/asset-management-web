@@ -2,20 +2,19 @@
 <aside class="sidebar">
     <div class="brand">
         <div class="logo-icon">
-            <!-- Ikon Hexagon Sederhana -->
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
             </svg>
         </div>
         <div class="brand-text">
-            <h2>Management<br>Aset</h2>
+            <h2>Management Aset</h2>
             <span>IT Desktop Support Engineer</span>
         </div>
     </div>
 
     <nav class="menu-container">
         <!-- 1. Dashboard Overview -->
-        <a href="#" class="nav-link active" data-page="dashboard">
+        <a href="dashboard.html" class="nav-link active" data-page="dashboard" data-target-file="dashboard.html">
             <i class="fa-solid fa-chart-line"></i>
             <span>Dashboard Overview</span>
         </a>
@@ -30,9 +29,9 @@
                 <i class="fa-solid fa-chevron-down arrow"></i>
             </button>
             <ul class="submenu" id="sub-inventory">
-                <li><a href="#" data-page="all-assets" class="active-sub">Semua Aset List</a></li>
-                <li><a href="#" data-page="spare-parts">Suku Cadang/Part</a></li>
-                <li><a href="#" data-page="borrowing">Peminjaman Aset</a></li>
+                <li><a href="inventory.html" data-page="all-assets" data-target-file="inventory.html" class="active-sub">Inventory Aset</a></li>
+                <li><a href="accessories.html" data-page="spare-parts" data-target-file="accessories.html">Accessoris Part</a></li>
+                <li><a href="borrowings.html" data-page="borrowing" data-target-file="borrowings.html">Peminjaman Aset</a></li>
             </ul>
         </div>
 
@@ -46,9 +45,9 @@
                 <i class="fa-solid fa-chevron-down arrow"></i>
             </button>
             <ul class="submenu" id="sub-operational">
-                <li><a href="#" data-page="daily-logs">Daily Activity Logs</a></li>
-                <li><a href="#" data-page="maintenance-schedule">Jadwal Maintenance</a></li>
-                <li><a href="#" data-page="pa-kpi">PA Performance KPI</a></li>
+                <li><a href="dailylogs.html" data-page="daily-logs" data-target-file="dailylogs.html">Daily Activity Logs</a></li>
+                <li><a href="maintenance.html" data-page="maintenance-schedule" data-target-file="maintenance.html">Jadwal Maintenance</a></li>
+                <li><a href="pa_kpi.html" data-page="pa-kpi" data-target-file="pa_kpi.html">PA Performance KPI</a></li>
             </ul>
         </div>
 
@@ -62,17 +61,17 @@
                 <i class="fa-solid fa-chevron-down arrow"></i>
             </button>
             <ul class="submenu" id="sub-report">
-                <li><a href="#" data-page="evidence">Evidence Activity</a></li>
-                <li><a href="#" data-page="vendor-population">Populasi Vendor Unit</a></li>
-                <li><a href="#" data-page="unit-distribution">Status Sebaran Unit</a></li>
-                <li><a href="#" data-page="pica">PICA</a></li>
+                <li><a href="evidence.html" data-page="evidence" data-target-file="evidence.html">Evidence Activity</a></li>
+                <li><a href="populasi_vendor.html" data-page="vendor-population" data-target-file="populasi_vendor.html">Populasi Vendor</a></li>
+                <li><a href="status_sebaran.html" data-page="unit-distribution" data-target-file="status_sebaran.html">Status Sebaran</a></li>
+                <li><a href="pica.html" data-page="pica" data-target-file="pica.html">PICA</a></li>
             </ul>
         </div>
 
         <!-- 5. Kelola Tim -->
-        <a href="#" class="nav-link" data-page="team-management">
+        <a href="management_user.html" class="nav-link" data-page="team-management" data-target-file="management_user.html">
             <i class="fa-solid fa-users"></i>
-            <span>Kelola Tim</span>
+            <span>Management User</span>
         </a>
     </nav>
 
