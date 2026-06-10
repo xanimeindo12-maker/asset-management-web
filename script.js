@@ -67,3 +67,36 @@ function highlightMenu(pageId) {
         }
     }
 }
+// Fungsi untuk highlight menu berdasarkan URL saat ini
+function highlightMenuFromURL() {
+    const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+    
+    // Reset semua
+    document.querySelectorAll('.nav-link, .submenu a').forEach(el => {
+        el.classList.remove('active', 'active-sub');
+    });
+    document.querySelectorAll('.nav-group').forEach(el => el.classList.remove('open'));
+
+    // Cari link yang cocok dengan nama file
+    const link = document.querySelector(`[data-target-file="${currentPage}.html"]`);
+    if (link) {
+        link.classList.add('active');
+        
+        // Jika dia sub-menu, buka parent-nya
+        if (link.closest('.submenu')) {
+            const group = link.closest('.nav-group');
+            group.classList.add('open');
+            group.querySelector('.dropdown-toggle').classList.add('active');
+            link.classList.add('active-sub');
+        }
+    }
+}
+
+// Panggil di DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Load sidebar dulu
+    loadSidebar();
+    
+    // Lalu highlight menu berdasarkan halaman yang sedang dibuka
+    setTimeout(highlightMenuFromURL, 100);
+});
