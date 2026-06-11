@@ -8,6 +8,7 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxb_RaZ1V4C6jn
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const currentPage = window.location.pathname.split('/').pop();
+    console.log('📄 Current page:', currentPage);
 
     if (currentPage === 'index.html' || currentPage === '') {
         initLoginPage();
@@ -17,17 +18,25 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
-// LOGIKA KHUSUS HALAMAN LOGIN
+// LOGIKA LOGIN
 // ==========================================
 function initLoginPage() {
-    // Kalau sudah login, langsung redirect
-    if (localStorage.getItem('asset_token') && localStorage.getItem('asset_user')) {
+    console.log(' Init login page');
+    
+    const existingToken = localStorage.getItem('asset_token');
+    const existingUser = localStorage.getItem('asset_user');
+    
+    if (existingToken && existingUser) {
+        console.log('✅ Sudah login, redirect ke dashboard');
         window.location.href = 'dashboard.html';
         return;
     }
 
     const form = document.getElementById('login-form');
-    if (!form) return;
+    if (!form) {
+        console.error('❌ Form login tidak ditemukan!');
+        return;
+    }
 
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -37,6 +46,8 @@ function initLoginPage() {
         const originalText = 'Sign In';
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
+
+        console.log('🔑 Mencoba login dengan:', username);
 
         if (!username || !password) {
             msg.textContent = 'Username dan Password wajib diisi!';
@@ -49,15 +60,12 @@ function initLoginPage() {
         msg.textContent = '';
 
         try {
-            // ✅ LANGSUNG ke Apps Script (TANPA PROXY)
             const url = `${APPS_SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
             
-            console.log('🔍 Fetching URL:', url);
+            console.log('📡 Fetching:', url);
             
-            // ✅ Apps Script sudah support CORS untuk GET requests
             const response = await fetch(url, {
                 method: 'GET',
-                mode: 'cors', // Explicit CORS mode
                 redirect: 'follow'
             });
 
@@ -68,12 +76,12 @@ function initLoginPage() {
             }
             
             const data = await response.json();
-            console.log('📦 Response dari server:', data);
+            console.log('📦 Response data:', data);
 
-            // ✅ Response structure: { success, message, data: { token, user } }
             if (data.success && data.data) {
                 const { token, user } = data.data;
                 
+                console.log('✅ Login berhasil, menyimpan ke localStorage');
                 localStorage.setItem('asset_token', token);
                 localStorage.setItem('asset_user', JSON.stringify(user));
                 
@@ -81,8 +89,9 @@ function initLoginPage() {
                 msg.style.color = 'green';
                 
                 setTimeout(() => {
+                    console.log('🚀 Redirecting ke dashboard.html');
                     window.location.href = 'dashboard.html';
-                }, 500);
+                }, 800);
             } else {
                 msg.textContent = data.message || 'Login gagal.';
                 msg.style.color = 'red';
@@ -91,17 +100,7 @@ function initLoginPage() {
             }
         } catch (err) {
             console.error('❌ Login Error:', err);
-            console.error('❌ Error name:', err.name);
-            console.error('❌ Error message:', err.message);
-            
-            // Handle specific errors
-            if (err.name === 'TypeError' && err.message.includes('fetch')) {
-                msg.textContent = '❌ Tidak bisa connect ke server. Cek koneksi internet.';
-            } else if (err.message.includes('CORS')) {
-                msg.textContent = '❌ CORS error. Coba pakai network lain atau VPN.';
-            } else {
-                msg.textContent = '❌ Error: ' + err.message;
-            }
+            msg.textContent = 'Error: ' + err.message;
             msg.style.color = 'red';
             btn.disabled = false;
             btn.innerHTML = originalText;
@@ -110,14 +109,16 @@ function initLoginPage() {
 }
 
 // ==========================================
-// LOGIKA KHUSUS HALAMAN APP (Dashboard, Inventory, dll)
+// LOGIKA HALAMAN APP
 // ==========================================
 function initAppPage() {
+    console.log('️ Init app page');
+    
     const token = localStorage.getItem('asset_token');
     const userStr = localStorage.getItem('asset_user');
 
-    // Redirect ke login jika belum login
     if (!token || !userStr) {
+        console.log('️ Belum login, redirect ke index');
         window.location.href = 'index.html';
         return;
     }
@@ -125,8 +126,9 @@ function initAppPage() {
     let user;
     try {
         user = JSON.parse(userStr);
+        console.log('👤 User loaded:', user);
     } catch (e) {
-        console.error('❌ User data corrupt, clearing...');
+        console.error(' User data corrupt');
         localStorage.clear();
         window.location.href = 'index.html';
         return;
@@ -136,7 +138,7 @@ function initAppPage() {
 }
 
 // ==========================================
-// LOAD SIDEBAR DINAMIS + SETUP INTERAKSI
+// LOAD SIDEBAR
 // ==========================================
 async function loadSidebar(user) {
     const container = document.getElementById('sidebar-container');
@@ -148,16 +150,14 @@ async function loadSidebar(user) {
         
         container.innerHTML = await response.text();
 
-        // Update info user di sidebar
         const nameEl = container.querySelector('.user-info .name');
         const roleEl = container.querySelector('.user-info .role');
         const avatarEl = container.querySelector('.avatar');
         
         if (nameEl) nameEl.textContent = user.displayName || user.username;
-        if (roleEl) roleEl) roleEl.textContent = user.role || 'USER';
+        if (roleEl) roleEl.textContent = user.role || 'USER';
         if (avatarEl) avatarEl.textContent = (user.displayName || user.username || 'U').charAt(0).toUpperCase();
 
-        // Setup tombol logout
         const logoutBtn = container.querySelector('.logout-btn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => {
@@ -166,10 +166,7 @@ async function loadSidebar(user) {
             });
         }
 
-        // Highlight menu aktif berdasarkan URL
         highlightMenuFromURL();
-        
-        // Setup interaksi dropdown & navigasi
         setupSidebarInteractions();
 
     } catch (error) {
@@ -178,9 +175,6 @@ async function loadSidebar(user) {
     }
 }
 
-// ==========================================
-// HIGHLIGHT MENU BERDASARKAN URL
-// ==========================================
 function highlightMenuFromURL() {
     const currentPage = window.location.pathname.split('/').pop().replace('.html', '') || 'dashboard';
 
@@ -208,9 +202,6 @@ function highlightMenuFromURL() {
     }
 }
 
-// ==========================================
-// SETUP INTERAKSI DROPDOWN & NAVIGASI
-// ==========================================
 function setupSidebarInteractions() {
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
     dropdownToggles.forEach(toggle => {
@@ -235,20 +226,6 @@ function setupSidebarInteractions() {
                     window.location.href = firstSubLink.href;
                 }
             }
-        });
-    });
-
-    const submenuLinks = document.querySelectorAll('.submenu a');
-    submenuLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            // Navigasi normal
-        });
-    });
-
-    const mainLinks = document.querySelectorAll('.nav-link:not(.dropdown-toggle)');
-    mainLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            // Navigasi normal
         });
     });
 }
