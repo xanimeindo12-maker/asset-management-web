@@ -22,64 +22,84 @@
             </div>
         </div>
 
-        <!-- Navigation -->
-        <nav class="sidebar-nav">
-            <a href="index.html" class="nav-item active">
-                <i class="fa-solid fa-chart-line"></i>
-                <span>Dashboard Overview</span>
+       <!-- Navigation -->
+<nav class="sidebar-nav">
+    <a href="index.html" class="nav-item active" data-page="dashboard">
+        <i class="fa-solid fa-chart-line"></i>
+        <span>Dashboard Overview</span>
+    </a>
+
+    <div class="nav-dropdown" data-dropdown="inventory">
+        <button class="dropdown-toggle" onclick="handleDropdownClick('inventory')">
+            <div class="dropdown-content">
+                <i class="fa-solid fa-box-open"></i>
+                <span>Inventory & Assets</span>
+            </div>
+            <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="dropdown-menu" id="dropdown-inventory">
+            <a href="semua-aset.html" class="dropdown-item" data-page="inventory" data-subpage="semua-aset">
+                Semua Aset List
             </a>
-
-            <div class="nav-dropdown">
-                <button class="dropdown-toggle" onclick="toggleDropdown('inventory')">
-                    <div class="dropdown-content">
-                        <i class="fa-solid fa-box-open"></i>
-                        <span>Inventory & Assets</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </button>
-                <div class="dropdown-menu" id="dropdown-inventory">
-                    <a href="#" class="dropdown-item">Semua Aset List</a>
-                    <a href="#" class="dropdown-item">Suku Cadang/Part</a>
-                    <a href="#" class="dropdown-item">Peminjaman Aset</a>
-                </div>
-            </div>
-
-            <div class="nav-dropdown">
-                <button class="dropdown-toggle" onclick="toggleDropdown('operational')">
-                    <div class="dropdown-content">
-                        <i class="fa-solid fa-briefcase"></i>
-                        <span>Operational Activity</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </button>
-                <div class="dropdown-menu" id="dropdown-operational">
-                    <a href="#" class="dropdown-item">Daily Activity Logs</a>
-                    <a href="#" class="dropdown-item">Jadwal Maintenance</a>
-                    <a href="#" class="dropdown-item">PA Performance KPI</a>
-                </div>
-            </div>
-
-            <div class="nav-dropdown">
-                <button class="dropdown-toggle" onclick="toggleDropdown('report')">
-                    <div class="dropdown-content">
-                        <i class="fa-solid fa-file-alt"></i>
-                        <span>Report Activity</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </button>
-                <div class="dropdown-menu" id="dropdown-report">
-                    <a href="#" class="dropdown-item">Evidence Activity</a>
-                    <a href="#" class="dropdown-item">Populasi Vendor Unit</a>
-                    <a href="#" class="dropdown-item">Status Sebaran Unit</a>
-                    <a href="#" class="dropdown-item">PICA</a>
-                </div>
-            </div>
-
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-users"></i>
-                <span>Kelola Tim</span>
+            <a href="suku-cadang.html" class="dropdown-item" data-page="inventory" data-subpage="suku-cadang">
+                Suku Cadang/Part
             </a>
-        </nav>
+            <a href="peminjaman.html" class="dropdown-item" data-page="inventory" data-subpage="peminjaman">
+                Peminjaman Aset
+            </a>
+        </div>
+    </div>
+
+    <div class="nav-dropdown" data-dropdown="operational">
+        <button class="dropdown-toggle" onclick="handleDropdownClick('operational')">
+            <div class="dropdown-content">
+                <i class="fa-solid fa-briefcase"></i>
+                <span>Operational Activity</span>
+            </div>
+            <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="dropdown-menu" id="dropdown-operational">
+            <a href="daily-logs.html" class="dropdown-item" data-page="operational" data-subpage="daily-logs">
+                Daily Activity Logs
+            </a>
+            <a href="jadwal-maintenance.html" class="dropdown-item" data-page="operational" data-subpage="maintenance">
+                Jadwal Maintenance
+            </a>
+            <a href="pa-kpi.html" class="dropdown-item" data-page="operational" data-subpage="pa-kpi">
+                PA Performance KPI
+            </a>
+        </div>
+    </div>
+
+    <div class="nav-dropdown" data-dropdown="report">
+        <button class="dropdown-toggle" onclick="handleDropdownClick('report')">
+            <div class="dropdown-content">
+                <i class="fa-solid fa-file-alt"></i>
+                <span>Report Activity</span>
+            </div>
+            <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="dropdown-menu" id="dropdown-report">
+            <a href="evidence.html" class="dropdown-item" data-page="report" data-subpage="evidence">
+                Evidence Activity
+            </a>
+            <a href="vendor-unit.html" class="dropdown-item" data-page="report" data-subpage="vendor">
+                Populasi Vendor Unit
+            </a>
+            <a href="sebaran-unit.html" class="dropdown-item" data-page="report" data-subpage="sebaran">
+                Status Sebaran Unit
+            </a>
+            <a href="pica.html" class="dropdown-item" data-page="report" data-subpage="pica">
+                PICA
+            </a>
+        </div>
+    </div>
+
+    <a href="kelola-tim.html" class="nav-item" data-page="team">
+        <i class="fa-solid fa-users"></i>
+        <span>Kelola Tim</span>
+    </a>
+</nav>
 
         <!-- User Profile -->
         <div class="sidebar-footer">
