@@ -3,33 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT DSE Management</title>
+    <title>IT DSE Management - Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="login-body">
-    <div class="login-box">
-        <div class="login-header">
-            <i class="fa-solid fa-layer-group logo-icon-large"></i>
-            <h2>IT DSE MANAGEMENT</h2>
-            <p>ENGINEER V1.0</p>
+<body>
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content">
+        <div class="page-header">
+            <h1>Dashboard</h1>
+            <p>Selamat datang di IT DSE Management System</p>
         </div>
-        <form id="login-form">
-            <div class="input-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" required placeholder="Enter username" autocomplete="username">
+        
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <i class="fa-solid fa-box"></i>
+                <h3>Total Inventory</h3>
+                <p class="stat-number" id="total-inventory">0</p>
             </div>
-            <div class="input-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" required placeholder="Enter password" autocomplete="current-password">
+            <div class="stat-card">
+                <i class="fa-solid fa-handshake"></i>
+                <h3>Active Borrowings</h3>
+                <p class="stat-number" id="active-borrowings">0</p>
             </div>
-            <button type="submit" id="btn-login">Sign In</button>
-            <p id="login-msg" class="msg-error"></p>
-        </form>
+            <div class="stat-card">
+                <i class="fa-solid fa-users"></i>
+                <h3>Total Users</h3>
+                <p class="stat-number" id="total-users">0</p>
+            </div>
+            <div class="stat-card">
+                <i class="fa-solid fa-chart-line"></i>
+                <h3>Daily Logs</h3>
+                <p class="stat-number" id="daily-logs">0</p>
+            </div>
+        </div>
     </div>
 
-    <!-- HANYA LOAD SCRIPT.JS DI SINI -->
     <script src="script.js"></script>
 </body>
 </html>
