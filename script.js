@@ -312,3 +312,105 @@ function setupSidebarInteractions() {
         });
     });
 }
+// Toggle Dropdown Menu
+function toggleDropdown(id) {
+    const dropdown = document.getElementById(`dropdown-${id}`);
+    const allDropdowns = document.querySelectorAll('.dropdown-menu');
+    
+    // Close all dropdowns
+    allDropdowns.forEach(d => {
+        if (d.id !== `dropdown-${id}`) {
+            d.classList.remove('show');
+        }
+    });
+    
+    // Toggle current
+    dropdown.classList.toggle('show');
+}
+
+// Handle Logout
+function handleLogout() {
+    if (confirm('Yakin ingin logout?')) {
+        localStorage.clear();
+        window.location.href = 'login.html';
+    }
+}
+
+// Load Activity Data
+async function loadActivityData() {
+    try {
+        // Contoh data - nanti bisa diambil dari API
+        const activities = [
+            {
+                title: 'Jadwal PM - BTSJAGINB24005',
+                badge: 'PM PROGRAM',
+                desc: 'Rencana Pemeliharaan Berkala • PIC: Arief',
+                date: '2026-06-08',
+                type: 'PREVENTIVE PM (PENDING)'
+            },
+            {
+                title: 'Jadwal PM - BTSJAGINB24001',
+                badge: 'PM PROGRAM',
+                desc: 'Rencana Pemeliharaan Berkala • PIC: Waluyo',
+                date: '2026-06-05',
+                type: 'PREVENTIVE PM (PENDING)'
+            },
+            {
+                title: 'Jadwal PM - BTSJAGINB23009',
+                badge: 'PM PROGRAM',
+                desc: 'Rencana Pemeliharaan Berkala • PIC: Risky Tri',
+                date: '2026-06-04',
+                type: 'PREVENTIVE PM (PENDING)'
+            }
+        ];
+
+        const container = document.getElementById('activity-list');
+        if (container) {
+            container.innerHTML = activities.map(act => `
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fa-regular fa-clock"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">${act.title}</div>
+                        <div class="activity-desc">${act.desc}</div>
+                        <div class="activity-meta">
+                            <span class="activity-badge">${act.badge}</span>
+                            <span class="activity-date">
+                                <i class="fa-regular fa-calendar"></i>
+                                ${act.date}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    } catch (error) {
+        console.error('Error loading activity:', error);
+    }
+}
+
+// Update User Info di Dashboard
+function updateDashboardUserInfo() {
+    const userStr = localStorage.getItem('asset_user');
+    if (userStr) {
+        try {
+            const user = JSON.parse(userStr);
+            const userName = document.getElementById('user-name');
+            const welcomeName = document.getElementById('welcome-name');
+            
+            if (userName) userName.textContent = user.displayName || user.username;
+            if (welcomeName) welcomeName.textContent = user.role || 'Desktop Support Engineer';
+        } catch (e) {
+            console.error('Error updating user info:', e);
+        }
+    }
+}
+
+// Panggil saat halaman dashboard load
+if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
+    document.addEventListener('DOMContentLoaded', () => {
+        updateDashboardUserInfo();
+        loadActivityData();
+    });
+}
