@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - IT DSE Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-body">
+    <div class="login-box">
+        <div class="login-header">
+            <i class="fa-solid fa-layer-group logo-icon-large"></i>
+            <h2>IT DSE MANAGEMENT</h2>
+            <p>ENGINEER V1.0</p>
+        </div>
+        <form id="login-form">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required placeholder="Enter username" autocomplete="username">
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required placeholder="Enter password" autocomplete="current-password">
+            </div>
+            <button type="submit" id="btn-login">Sign In</button>
+            <p id="login-msg" class="msg-error"></p>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
