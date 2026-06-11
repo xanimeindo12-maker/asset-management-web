@@ -3,43 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT DSE Management - Dashboard</title>
+    <title>Dashboard - IT DSE MANAGEMENT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div id="sidebar-container"></div>
-    
-    <div class="main-content">
-        <div class="page-header">
-            <h1>Dashboard</h1>
-            <p>Selamat datang di IT DSE Management System</p>
+<body class="dashboard-body">
+    <!-- Sidebar -->
+    <aside class="modern-sidebar" id="sidebar">
+        <!-- Logo -->
+        <div class="sidebar-header">
+            <div class="hexagon-logo">
+                <i class="fa-solid fa-tower-broadcast"></i>
+            </div>
+            <div class="brand-text">
+                <h3>IT DSE MANAGEMENER</h3>
+                <span class="subtitle">OPERATIONAL HUB</span>
+            </div>
         </div>
-        
-        <div class="dashboard-grid">
-            <div class="stat-card">
-                <i class="fa-solid fa-box"></i>
-                <h3>Total Inventory</h3>
-                <p class="stat-number" id="total-inventory">0</p>
-            </div>
-            <div class="stat-card">
-                <i class="fa-solid fa-handshake"></i>
-                <h3>Active Borrowings</h3>
-                <p class="stat-number" id="active-borrowings">0</p>
-            </div>
-            <div class="stat-card">
-                <i class="fa-solid fa-users"></i>
-                <h3>Total Users</h3>
-                <p class="stat-number" id="total-users">0</p>
-            </div>
-            <div class="stat-card">
+
+        <!-- Navigation -->
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item active">
                 <i class="fa-solid fa-chart-line"></i>
-                <h3>Daily Logs</h3>
-                <p class="stat-number" id="daily-logs">0</p>
+                <span>Dashboard Overview</span>
+            </a>
+
+            <div class="nav-dropdown">
+                <button class="dropdown-toggle" onclick="toggleDropdown('inventory')">
+                    <div class="dropdown-content">
+                        <i class="fa-solid fa-box-open"></i>
+                        <span>Inventory & Assets</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-menu" id="dropdown-inventory">
+                    <a href="#" class="dropdown-item">Semua Aset List</a>
+                    <a href="#" class="dropdown-item">Suku Cadang/Part</a>
+                    <a href="#" class="dropdown-item">Peminjaman Aset</a>
+                </div>
+            </div>
+
+            <div class="nav-dropdown">
+                <button class="dropdown-toggle" onclick="toggleDropdown('operational')">
+                    <div class="dropdown-content">
+                        <i class="fa-solid fa-briefcase"></i>
+                        <span>Operational Activity</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-menu" id="dropdown-operational">
+                    <a href="#" class="dropdown-item">Daily Activity Logs</a>
+                    <a href="#" class="dropdown-item">Jadwal Maintenance</a>
+                    <a href="#" class="dropdown-item">PA Performance KPI</a>
+                </div>
+            </div>
+
+            <div class="nav-dropdown">
+                <button class="dropdown-toggle" onclick="toggleDropdown('report')">
+                    <div class="dropdown-content">
+                        <i class="fa-solid fa-file-alt"></i>
+                        <span>Report Activity</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-menu" id="dropdown-report">
+                    <a href="#" class="dropdown-item">Evidence Activity</a>
+                    <a href="#" class="dropdown-item">Populasi Vendor Unit</a>
+                    <a href="#" class="dropdown-item">Status Sebaran Unit</a>
+                    <a href="#" class="dropdown-item">PICA</a>
+                </div>
+            </div>
+
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-users"></i>
+                <span>Kelola Tim</span>
+            </a>
+        </nav>
+
+        <!-- User Profile -->
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">A</div>
+                <div class="user-info">
+                    <span class="user-name" id="user-name">Administrator</span>
+                    <span class="user-role">ADMINISTRATOR</span>
+                </div>
+                <button class="logout-btn" onclick="handleLogout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </button>
             </div>
         </div>
-    </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="page-title">
+                <h1>Dashboard Overview</h1>
+            </div>
+            <div class="top-actions">
+                <div class="system-status">
+                    <span class="status-dot"></span>
+                    <span>System Online</span>
+                </div>
+                <button class="icon-btn">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+                <button class="icon-btn notification">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge">5</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <h2>Welcome back, <span id="welcome-name">Desktop Support Engineer</span></h2>
+            <p>Here is the latest status of your IT DSE Operations.</p>
+        </section>
+
+        <!-- Stats Grid -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <i class="fa-solid fa-database"></i>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">TOTAL ASSETS</span>
+                    <span class="stat-value" id="total-assets">181</span>
+                    <span class="stat-desc">IT devices in system</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon yellow">
+                    <i class="fa-solid fa-wrench"></i>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">ACTIVE MAINTENANCE</span>
+                    <span class="stat-value" id="active-maintenance">3</span>
+                    <span class="stat-desc">Pending PM tasks</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">PENDING PM (JUNI)</span>
+                    <span class="stat-value" id="pending-pm">3</span>
+                    <span class="stat-desc">For the current month</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-content">
+                    <span class="stat-label">ASSETS IN USE</span>
+                    <span class="stat-value" id="assets-in-use">176</span>
+                    <span class="badge-status active">Active</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-content">
+                    <span class="stat-label">ASSETS IN STOCK</span>
+                    <span class="stat-value" id="assets-stock">4</span>
+                    <span class="badge-status available">Available</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-content">
+                    <span class="stat-label">TOTAL BREAKDOWN</span>
+                    <span class="stat-value" id="total-breakdown">1</span>
+                    <span class="badge-status urgent">Urgent</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-content">
+                    <span class="stat-label">EXPIRING WARRANTY</span>
+                    <span class="stat-value" id="expiring-warranty">0</span>
+                    <span class="badge-status action">Action Req.</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-content">
+                    <span class="stat-label">AVG WEEKLY PA</span>
+                    <span class="stat-value" id="avg-pa">100.00%</span>
+                    <span class="badge-status overall">Overall</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts & Activity Section -->
+        <section class="dashboard-sections">
+            <!-- PA Trend Chart -->
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-chart-line"></i> Physical Availability (PA) Trend</h3>
+                    <button class="btn-export">Export</button>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-line">
+                        <div class="chart-points">
+                            <div class="point" data-week="W1" data-value="98"></div>
+                            <div class="point" data-week="W2" data-value="99"></div>
+                            <div class="point" data-week="W3" data-value="97"></div>
+                            <div class="point active" data-week="W4" data-value="100"></div>
+                        </div>
+                    </div>
+                    <div class="chart-labels">
+                        <span>W1</span>
+                        <span>W2</span>
+                        <span>W3</span>
+                        <span>W4</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming PM Programs -->
+            <div class="side-card">
+                <div class="card-header">
+                    <h3>Upcoming PM Programs</h3>
+                    <span class="badge pending">Pending PM</span>
+                </div>
+                <div class="pm-list">
+                    <div class="pm-item">
+                        <div class="pm-badge">PM</div>
+                        <div class="pm-info">
+                            <span class="pm-code">BTSJAGINB23009</span>
+                            <span class="pm-pic">PIC: Risky Tri</span>
+                        </div>
+                        <span class="pm-date">2026-06-04</span>
+                    </div>
+                    <div class="pm-item">
+                        <div class="pm-badge">PM</div>
+                        <div class="pm-info">
+                            <span class="pm-code">BTSJAGINB24001</span>
+                            <span class="pm-pic">PIC: Waluyo</span>
+                        </div>
+                        <span class="pm-date">2026-06-05</span>
+                    </div>
+                    <div class="pm-item">
+                        <div class="pm-badge">PM</div>
+                        <div class="pm-info">
+                            <span class="pm-code">BTSJAGINB24005</span>
+                            <span class="pm-pic">PIC: Arief</span>
+                        </div>
+                        <span class="pm-date">2026-06-08</span>
+                    </div>
+                </div>
+                <button class="btn-view-all">View Full Schedule</button>
+            </div>
+        </section>
+
+        <!-- Recent Activity Feed -->
+        <section class="activity-section">
+            <div class="section-header">
+                <div>
+                    <span class="badge feed">Feed</span>
+                    <h3>Recent Activity Feed</h3>
+                    <p>Live summary of the latest 5 logs and preventive maintenance updates</p>
+                </div>
+                <a href="#" class="view-all">View All Logs <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="activity-list" id="activity-list">
+                <!-- Activity items will be loaded here -->
+            </div>
+        </section>
+    </main>
 
     <script src="script.js"></script>
 </body>
