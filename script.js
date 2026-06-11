@@ -1,12 +1,7 @@
-// Tambahkan proxy di depan URL GAS
-const proxyUrl = 'https://corsproxy.io/?'; 
-const targetUrl = `${APPS_SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
-
-const res = await fetch(proxyUrl + encodeURIComponent('https://script.google.com/macros/s/AKfycbxxb_RaZ1V4C6jn8QDIiutCjdnVqEahh8w6iGvaH-8-5I_OZfVUF2MTgFFijX0AntlO/exec'), {
-    method: 'GET',
-    redirect: 'follow'
-});
-
+// ==========================================
+// KONFIGURASI
+// ==========================================
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxb_RaZ1V4C6jn8QDIiutCjdnVqEahh8w6iGvaH-8-5I_OZfVUF2MTgFFijX0AntlO/exec';
 
 // ==========================================
 // DETEKSI HALAMAN SAAT INI
@@ -25,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // LOGIKA KHUSUS HALAMAN LOGIN
 // ==========================================
 function initLoginPage() {
+    // Kalau sudah login, langsung redirect
     if (localStorage.getItem('asset_token') && localStorage.getItem('asset_user')) {
         window.location.href = 'dashboard.html';
         return;
@@ -52,30 +48,40 @@ function initLoginPage() {
         msg.textContent = '';
 
         try {
-            // ✅ TRIK BYPASS CORS: Gunakan GET dengan parameter URL
+            // ✅ Gunakan GET dengan query parameters (bypass CORS)
             const url = `${APPS_SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
             
+            console.log('🔍 Fetching URL:', url);
+            
             const res = await fetch(url, {
-                method: 'GET', // Ubah jadi GET
-                redirect: 'follow' 
+                method: 'GET',
+                redirect: 'follow'
             });
 
-            if (!res.ok) throw new Error(`Server error: ${res.status}`);
+            if (!res.ok) {
+                throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+            }
             
-            const data = await res.json();
+            const response = await res.json();
+            console.log('📦 Response dari server:', response);
 
-            if (data.success) {
-                localStorage.setItem('asset_token', data.token);
-                localStorage.setItem('asset_user', JSON.stringify(data.user));
+            // ✅ PERBAIKAN: response dibungkus { success, message, data: { token, user } }
+            if (response.success && response.data) {
+                const { token, user } = response.data;
+                
+                localStorage.setItem('asset_token', token);
+                localStorage.setItem('asset_user', JSON.stringify(user));
+                
+                msg.textContent = '';
                 window.location.href = 'dashboard.html';
             } else {
-                msg.textContent = data.message || 'Login gagal.';
+                msg.textContent = response.message || 'Login gagal.';
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             }
         } catch (err) {
-            console.error('Login Error:', err);
-            msg.textContent = 'Gagal terhubung ke server. Pastikan URL GAS benar.';
+            console.error('❌ Login Error:', err);
+            msg.textContent = 'Gagal terhubung ke server: ' + err.message;
             btn.disabled = false;
             btn.innerHTML = originalText;
         }
@@ -133,7 +139,7 @@ async function loadSidebar(user) {
         // Highlight menu aktif berdasarkan URL
         highlightMenuFromURL();
         
-        // ✅ PENTING: Setup interaksi dropdown & navigasi SETELAH sidebar dimuat
+        // Setup interaksi dropdown & navigasi
         setupSidebarInteractions();
 
     } catch (error) {
@@ -148,7 +154,6 @@ async function loadSidebar(user) {
 function highlightMenuFromURL() {
     const currentPage = window.location.pathname.split('/').pop().replace('.html', '') || 'dashboard';
 
-    // Reset semua state aktif
     document.querySelectorAll('.nav-link, .submenu a').forEach(el => {
         el.classList.remove('active', 'active-sub');
     });
@@ -156,12 +161,10 @@ function highlightMenuFromURL() {
         el.classList.remove('open');
     });
 
-    // Cari link yang cocok dengan halaman saat ini
     const activeLink = document.querySelector(`[data-target-file="${currentPage}.html"]`);
     
     if (activeLink) {
         if (activeLink.closest('.submenu')) {
-            // Jika sub-menu, highlight dia & buka parent dropdown
             activeLink.classList.add('active-sub');
             const parentGroup = activeLink.closest('.nav-group');
             if (parentGroup) {
@@ -170,7 +173,6 @@ function highlightMenuFromURL() {
                 if (toggle) toggle.classList.add('active');
             }
         } else {
-            // Jika menu utama, langsung highlight
             activeLink.classList.add('active');
         }
     }
@@ -180,28 +182,24 @@ function highlightMenuFromURL() {
 // SETUP INTERAKSI DROPDOWN & NAVIGASI
 // ==========================================
 function setupSidebarInteractions() {
-    // 1. Handle klik pada dropdown toggle
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
     dropdownToggles.forEach(toggle => {
         toggle.addEventListener('click', function(e) {
-            e.preventDefault(); // Mencegah reload halaman
+            e.preventDefault();
             
             const group = this.closest('.nav-group');
             const isOpen = group.classList.contains('open');
             
-            // Tutup semua dropdown lain
             document.querySelectorAll('.nav-group').forEach(g => {
                 g.classList.remove('open');
                 const otherToggle = g.querySelector('.dropdown-toggle');
                 if (otherToggle) otherToggle.setAttribute('aria-expanded', 'false');
             });
             
-            // Toggle dropdown yang diklik
             if (!isOpen) {
                 group.classList.add('open');
                 this.setAttribute('aria-expanded', 'true');
                 
-                // Langsung arahkan ke sub-item pertama
                 const firstSubLink = group.querySelector('.submenu a');
                 if (firstSubLink) {
                     window.location.href = firstSubLink.href;
@@ -210,20 +208,17 @@ function setupSidebarInteractions() {
         });
     });
 
-    // 2. Handle klik pada link submenu (biarkan navigasi normal)
     const submenuLinks = document.querySelectorAll('.submenu a');
     submenuLinks.forEach(link => {
         link.addEventListener('click', function(e) {
-            // Biarkan browser navigasi ke href
-            // highlightMenuFromURL() akan dipanggil di halaman tujuan
+            // Navigasi normal
         });
     });
 
-    // 3. Handle klik pada link utama non-dropdown
     const mainLinks = document.querySelectorAll('.nav-link:not(.dropdown-toggle)');
     mainLinks.forEach(link => {
         link.addEventListener('click', function(e) {
-            // Biarkan navigasi normal
+            // Navigasi normal
         });
     });
 }
