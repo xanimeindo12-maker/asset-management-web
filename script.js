@@ -8,7 +8,7 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxb_RaZ1V4C6jn
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const currentPage = window.location.pathname.split('/').pop();
-    console.log('📄 Current page:', currentPage);
+    console.log(' Current page:', currentPage);
 
     if (currentPage === 'index.html' || currentPage === '') {
         initLoginPage();
@@ -21,8 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // LOGIKA LOGIN
 // ==========================================
 function initLoginPage() {
-    console.log(' Init login page');
+    console.log('🔐 Init login page');
     
+    // Cek apakah sudah login
     const existingToken = localStorage.getItem('asset_token');
     const existingUser = localStorage.getItem('asset_user');
     
@@ -88,8 +89,9 @@ function initLoginPage() {
                 msg.textContent = '✅ Login berhasil! Redirecting...';
                 msg.style.color = 'green';
                 
+                // Delay sedikit biar user lihat pesan
                 setTimeout(() => {
-                    console.log('🚀 Redirecting ke dashboard.html');
+                    console.log('🔄 Redirecting ke dashboard.html');
                     window.location.href = 'dashboard.html';
                 }, 800);
             } else {
@@ -118,7 +120,7 @@ function initAppPage() {
     const userStr = localStorage.getItem('asset_user');
 
     if (!token || !userStr) {
-        console.log('️ Belum login, redirect ke index');
+        console.log(' Belum login, redirect ke index');
         window.location.href = 'index.html';
         return;
     }
@@ -128,7 +130,7 @@ function initAppPage() {
         user = JSON.parse(userStr);
         console.log('👤 User loaded:', user);
     } catch (e) {
-        console.error(' User data corrupt');
+        console.error('❌ User data corrupt');
         localStorage.clear();
         window.location.href = 'index.html';
         return;
@@ -155,7 +157,7 @@ async function loadSidebar(user) {
         const avatarEl = container.querySelector('.avatar');
         
         if (nameEl) nameEl.textContent = user.displayName || user.username;
-        if (roleEl) roleEl.textContent = user.role || 'USER';
+        if (roleEl) roleEl.textContent = user.role || 'USER'; // ✅ DIPERBAIKI (typo dihapus)
         if (avatarEl) avatarEl.textContent = (user.displayName || user.username || 'U').charAt(0).toUpperCase();
 
         const logoutBtn = container.querySelector('.logout-btn');
@@ -175,6 +177,9 @@ async function loadSidebar(user) {
     }
 }
 
+// ==========================================
+// HIGHLIGHT MENU
+// ==========================================
 function highlightMenuFromURL() {
     const currentPage = window.location.pathname.split('/').pop().replace('.html', '') || 'dashboard';
 
@@ -202,6 +207,9 @@ function highlightMenuFromURL() {
     }
 }
 
+// ==========================================
+// SETUP INTERAKSI SIDEBAR
+// ==========================================
 function setupSidebarInteractions() {
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
     dropdownToggles.forEach(toggle => {
