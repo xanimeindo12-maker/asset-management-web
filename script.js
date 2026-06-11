@@ -5,22 +5,28 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxb_RaZ1V4C6jn
 const WORKER_URL = 'https://dse-proxy.xanimeindo12.workers.dev';
 
 // ==========================================
-// DETEKSI HALAMAN
+// DETEKSI HALAMAN - IMPROVED
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    const currentPage = window.location.pathname.split('/').pop();
+    const pathname = window.location.pathname;
+    const currentPage = pathname.split('/').pop().toLowerCase();
+    
+    console.log('📄 Full pathname:', pathname);
     console.log('📄 Current page:', currentPage);
 
-    // ✅ Handle halaman login
-    if (currentPage === 'login.html') {
+    // ✅ Deteksi halaman login
+    if (currentPage === 'login.html' || currentPage === 'login') {
+        console.log('🔐 Initializing LOGIN page...');
         initLoginPage();
     } 
-    // ✅ Handle halaman index (redirect ke dashboard atau login)
-    else if (currentPage === 'index.html' || currentPage === '') {
+    // ✅ Deteksi halaman index/root
+    else if (currentPage === 'index.html' || currentPage === '' || currentPage === '/') {
+        console.log('📊 Initializing INDEX/DASHBOARD page...');
         handleIndexPage();
     } 
-    // ✅ Handle halaman lain (dashboard, dll)
+    // ✅ Halaman lainnya (dashboard, inventory, dll)
     else {
+        console.log('📱 Initializing APP page:', currentPage);
         initAppPage();
     }
 });
@@ -32,50 +38,65 @@ function handleIndexPage() {
     const token = localStorage.getItem('asset_token');
     const userStr = localStorage.getItem('asset_user');
 
-    // Kalau sudah login, tampilkan dashboard
+    console.log('🔍 Checking auth - Token:', token ? 'exists' : 'null');
+
+    // Kalau sudah login, load dashboard
     if (token && userStr) {
-        console.log('✅ Sudah login, load dashboard');
+        console.log('✅ User logged in, loading dashboard...');
         initAppPage();
     } 
     // Kalau belum login, redirect ke login.html
     else {
-        console.log('⚠️ Belum login, redirect ke login.html');
+        console.log('⚠️ Not logged in, redirecting to login.html...');
         window.location.href = 'login.html';
     }
 }
 
 // ==========================================
-// LOGIKA LOGIN
+// LOGIKA LOGIN PAGE
 // ==========================================
 function initLoginPage() {
-    console.log('🔐 Init login page');
+    console.log('🔐 initLoginPage() called');
     
     // Cek apakah sudah login
     const existingToken = localStorage.getItem('asset_token');
     const existingUser = localStorage.getItem('asset_user');
     
+    console.log('🔍 Checking existing session...');
+    
     if (existingToken && existingUser) {
-        console.log('✅ Sudah login, redirect ke index');
-        window.location.href = 'index.html';
+        console.log('✅ Already logged in, redirecting to index.html');
+        // Tunggu sebentar biar tidak terlalu cepat
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 100);
         return;
     }
 
+    console.log('📝 Setting up login form...');
+    
     const form = document.getElementById('login-form');
     if (!form) {
-        console.error('❌ Form login tidak ditemukan!');
+        console.error('❌ Login form NOT found!');
         return;
     }
 
-    form.addEventListener('submit', async function(e) {
+    // ✅ PENTING: Hapus semua event listener lama
+    const newForm = form.cloneNode(true);
+    form.parentNode.replaceChild(newForm, form);
+
+    // Tambahkan event listener yang baru
+    newForm.addEventListener('submit', async function(e) {
         e.preventDefault();
+        e.stopPropagation();
+        
+        console.log('📝 Login form submitted');
         
         const btn = document.getElementById('btn-login');
         const msg = document.getElementById('login-msg');
-        const originalText = 'Sign In';
+        const originalText = btn.innerHTML || 'Sign In';
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
-
-        console.log('🔑 Mencoba login dengan:', username);
 
         if (!username || !password) {
             msg.textContent = 'Username dan Password wajib diisi!';
@@ -83,21 +104,27 @@ function initLoginPage() {
             return;
         }
 
+        console.log('🔑 Attempting login for:', username);
+
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connecting...';
         msg.textContent = '';
 
         try {
             const url = `${APPS_SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
-            
-            // ✅ Pakai Worker Proxy
             const proxyUrl = `${WORKER_URL}?url=${encodeURIComponent(url)}`;
-            console.log('📡 Fetching via Worker:', proxyUrl);
+            
+            console.log('📡 Fetching:', proxyUrl);
             
             const response = await fetch(proxyUrl, {
                 method: 'GET',
-                redirect: 'follow'
+                redirect: 'follow',
+                headers: {
+                    'Accept': 'application/json'
+                }
             });
+
+            console.log('📥 Response status:', response.status);
 
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -109,17 +136,18 @@ function initLoginPage() {
             if (data.success && data.data) {
                 const { token, user } = data.data;
                 
-                console.log('✅ Login berhasil, menyimpan ke localStorage');
+                console.log('✅ Login successful, saving to localStorage');
                 localStorage.setItem('asset_token', token);
                 localStorage.setItem('asset_user', JSON.stringify(user));
                 
                 msg.textContent = '✅ Login berhasil! Redirecting...';
                 msg.style.color = 'green';
                 
+                // Delay redirect untuk UX yang lebih baik
                 setTimeout(() => {
-                    console.log('🚀 Redirecting ke index.html');
+                    console.log('🚀 Redirecting to index.html');
                     window.location.href = 'index.html';
-                }, 800);
+                }, 1000);
             } else {
                 msg.textContent = data.message || 'Login gagal.';
                 msg.style.color = 'red';
@@ -133,20 +161,22 @@ function initLoginPage() {
             btn.disabled = false;
             btn.innerHTML = originalText;
         }
-    });
+    }, { passive: false });
+
+    console.log('✅ Login form setup complete');
 }
 
 // ==========================================
 // LOGIKA HALAMAN APP
 // ==========================================
 function initAppPage() {
-    console.log('📱 Init app page');
+    console.log('📱 initAppPage() called');
     
     const token = localStorage.getItem('asset_token');
     const userStr = localStorage.getItem('asset_user');
 
     if (!token || !userStr) {
-        console.log('⚠️ Belum login, redirect ke login.html');
+        console.log('⚠️ No auth found, redirecting to login.html');
         window.location.href = 'login.html';
         return;
     }
@@ -156,7 +186,7 @@ function initAppPage() {
         user = JSON.parse(userStr);
         console.log('👤 User loaded:', user);
     } catch (e) {
-        console.error('❌ User data corrupt');
+        console.error('❌ User data corrupt, clearing storage');
         localStorage.clear();
         window.location.href = 'login.html';
         return;
@@ -169,14 +199,20 @@ function initAppPage() {
 // LOAD SIDEBAR
 // ==========================================
 async function loadSidebar(user) {
+    console.log('📋 Loading sidebar...');
+    
     const container = document.getElementById('sidebar-container');
-    if (!container) return;
+    if (!container) {
+        console.error('❌ Sidebar container not found');
+        return;
+    }
 
     try {
         const response = await fetch('sidebar.html');
         if (!response.ok) throw new Error('Sidebar not found');
         
         container.innerHTML = await response.text();
+        console.log('✅ Sidebar loaded');
 
         const nameEl = container.querySelector('.user-info .name');
         const roleEl = container.querySelector('.user-info .role');
@@ -189,6 +225,7 @@ async function loadSidebar(user) {
         const logoutBtn = container.querySelector('.logout-btn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => {
+                console.log('🚪 User logging out');
                 localStorage.clear();
                 window.location.href = 'login.html';
             });
@@ -198,7 +235,7 @@ async function loadSidebar(user) {
         setupSidebarInteractions();
 
     } catch (error) {
-        console.error("Sidebar error:", error);
+        console.error("❌ Sidebar error:", error);
         container.innerHTML = '<p style="padding:20px;color:red;">Gagal memuat menu.</p>';
     }
 }
