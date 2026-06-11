@@ -2,20 +2,47 @@
 // KONFIGURASI
 // ==========================================
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxb_RaZ1V4C6jn8QDIiutCjdnVqEahh8w6iGvaH-8-5I_OZfVUF2MTgFFijX0AntlO/exec';
+const WORKER_URL = 'https://dse-proxy.xanimeindo12.workers.dev';
 
 // ==========================================
-// DETEKSI HALAMAN SAAT INI
+// DETEKSI HALAMAN
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const currentPage = window.location.pathname.split('/').pop();
-    console.log(' Current page:', currentPage);
+    console.log('📄 Current page:', currentPage);
 
-    if (currentPage === 'index.html' || currentPage === '') {
+    // ✅ Handle halaman login
+    if (currentPage === 'login.html') {
         initLoginPage();
-    } else {
+    } 
+    // ✅ Handle halaman index (redirect ke dashboard atau login)
+    else if (currentPage === 'index.html' || currentPage === '') {
+        handleIndexPage();
+    } 
+    // ✅ Handle halaman lain (dashboard, dll)
+    else {
         initAppPage();
     }
 });
+
+// ==========================================
+// HANDLE INDEX PAGE
+// ==========================================
+function handleIndexPage() {
+    const token = localStorage.getItem('asset_token');
+    const userStr = localStorage.getItem('asset_user');
+
+    // Kalau sudah login, tampilkan dashboard
+    if (token && userStr) {
+        console.log('✅ Sudah login, load dashboard');
+        initAppPage();
+    } 
+    // Kalau belum login, redirect ke login.html
+    else {
+        console.log('⚠️ Belum login, redirect ke login.html');
+        window.location.href = 'login.html';
+    }
+}
 
 // ==========================================
 // LOGIKA LOGIN
@@ -28,8 +55,8 @@ function initLoginPage() {
     const existingUser = localStorage.getItem('asset_user');
     
     if (existingToken && existingUser) {
-        console.log('✅ Sudah login, redirect ke dashboard');
-        window.location.href = 'dashboard.html';
+        console.log('✅ Sudah login, redirect ke index');
+        window.location.href = 'index.html';
         return;
     }
 
@@ -63,15 +90,15 @@ function initLoginPage() {
         try {
             const url = `${APPS_SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
             
-            console.log('📡 Fetching:', url);
+            // ✅ Pakai Worker Proxy
+            const proxyUrl = `${WORKER_URL}?url=${encodeURIComponent(url)}`;
+            console.log('📡 Fetching via Worker:', proxyUrl);
             
-            const response = await fetch(url, {
+            const response = await fetch(proxyUrl, {
                 method: 'GET',
                 redirect: 'follow'
             });
 
-            console.log('📥 Response status:', response.status);
-            
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
@@ -89,10 +116,9 @@ function initLoginPage() {
                 msg.textContent = '✅ Login berhasil! Redirecting...';
                 msg.style.color = 'green';
                 
-                // Delay sedikit biar user lihat pesan
                 setTimeout(() => {
-                    console.log('🔄 Redirecting ke dashboard.html');
-                    window.location.href = 'dashboard.html';
+                    console.log('🚀 Redirecting ke index.html');
+                    window.location.href = 'index.html';
                 }, 800);
             } else {
                 msg.textContent = data.message || 'Login gagal.';
@@ -114,14 +140,14 @@ function initLoginPage() {
 // LOGIKA HALAMAN APP
 // ==========================================
 function initAppPage() {
-    console.log('️ Init app page');
+    console.log('📱 Init app page');
     
     const token = localStorage.getItem('asset_token');
     const userStr = localStorage.getItem('asset_user');
 
     if (!token || !userStr) {
-        console.log(' Belum login, redirect ke index');
-        window.location.href = 'index.html';
+        console.log('⚠️ Belum login, redirect ke login.html');
+        window.location.href = 'login.html';
         return;
     }
 
@@ -132,7 +158,7 @@ function initAppPage() {
     } catch (e) {
         console.error('❌ User data corrupt');
         localStorage.clear();
-        window.location.href = 'index.html';
+        window.location.href = 'login.html';
         return;
     }
     
@@ -157,14 +183,14 @@ async function loadSidebar(user) {
         const avatarEl = container.querySelector('.avatar');
         
         if (nameEl) nameEl.textContent = user.displayName || user.username;
-        if (roleEl) roleEl.textContent = user.role || 'USER'; // ✅ DIPERBAIKI (typo dihapus)
+        if (roleEl) roleEl.textContent = user.role || 'USER';
         if (avatarEl) avatarEl.textContent = (user.displayName || user.username || 'U').charAt(0).toUpperCase();
 
         const logoutBtn = container.querySelector('.logout-btn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => {
                 localStorage.clear();
-                window.location.href = 'index.html';
+                window.location.href = 'login.html';
             });
         }
 
@@ -177,11 +203,8 @@ async function loadSidebar(user) {
     }
 }
 
-// ==========================================
-// HIGHLIGHT MENU
-// ==========================================
 function highlightMenuFromURL() {
-    const currentPage = window.location.pathname.split('/').pop().replace('.html', '') || 'dashboard';
+    const currentPage = window.location.pathname.split('/').pop().replace('.html', '') || 'index';
 
     document.querySelectorAll('.nav-link, .submenu a').forEach(el => {
         el.classList.remove('active', 'active-sub');
@@ -207,9 +230,6 @@ function highlightMenuFromURL() {
     }
 }
 
-// ==========================================
-// SETUP INTERAKSI SIDEBAR
-// ==========================================
 function setupSidebarInteractions() {
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
     dropdownToggles.forEach(toggle => {
