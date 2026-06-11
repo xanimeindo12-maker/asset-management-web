@@ -3,6 +3,9 @@
 // ==========================================
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxb_RaZ1V4C6jn8QDIiutCjdnVqEahh8w6iGvaH-8-5I_OZfVUF2MTgFFijX0AntlO/exec';
 
+// ✅ CORS Proxy untuk bypass masalah CORS dari GitHub Pages
+const CORS_PROXY = 'https://corsproxy.io/?';
+
 // ==========================================
 // DETEKSI HALAMAN SAAT INI
 // ==========================================
@@ -15,6 +18,49 @@ document.addEventListener('DOMContentLoaded', () => {
         initAppPage();
     }
 });
+
+// ==========================================
+// HELPER: Fetch dengan CORS Proxy Fallback
+// ==========================================
+async function fetchWithProxy(url) {
+    // Coba langsung dulu (Apps Script seharusnya support CORS untuk GET)
+    try {
+        const res = await fetch(url, {
+            method: 'GET',
+            redirect: 'follow'
+        });
+        
+        if (res.ok) {
+            const text = await res.text();
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                throw new Error('Response bukan JSON valid');
+            }
+        }
+        throw new Error(`HTTP ${res.status}`);
+    } catch (directError) {
+        console.warn('⚠️ Direct fetch gagal, coba via proxy...', directError.message);
+        
+        // Fallback: pakai CORS proxy
+        const proxyUrl = CORS_PROXY + encodeURIComponent(url);
+        const res = await fetch(proxyUrl, {
+            method: 'GET',
+            redirect: 'follow'
+        });
+        
+        if (!res.ok) {
+            throw new Error(`Proxy juga gagal: HTTP ${res.status}`);
+        }
+        
+        const text = await res.text();
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            throw new Error('Response dari proxy bukan JSON valid');
+        }
+    }
+}
 
 // ==========================================
 // LOGIKA KHUSUS HALAMAN LOGIN
@@ -40,6 +86,7 @@ function initLoginPage() {
 
         if (!username || !password) {
             msg.textContent = 'Username dan Password wajib diisi!';
+            msg.style.color = 'red';
             return;
         }
 
@@ -48,40 +95,39 @@ function initLoginPage() {
         msg.textContent = '';
 
         try {
-            // ✅ Gunakan GET dengan query parameters (bypass CORS)
+            // ✅ Gunakan GET dengan query parameters
             const url = `${APPS_SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
             
             console.log('🔍 Fetching URL:', url);
             
-            const res = await fetch(url, {
-                method: 'GET',
-                redirect: 'follow'
-            });
-
-            if (!res.ok) {
-                throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-            }
+            // ✅ Pakai helper yang sudah handle CORS
+            const response = await fetchWithProxy(url);
             
-            const response = await res.json();
             console.log('📦 Response dari server:', response);
 
-            // ✅ PERBAIKAN: response dibungkus { success, message, data: { token, user } }
+            // ✅ Response dibungkus { success, message, data: { token, user } }
             if (response.success && response.data) {
                 const { token, user } = response.data;
                 
                 localStorage.setItem('asset_token', token);
                 localStorage.setItem('asset_user', JSON.stringify(user));
                 
-                msg.textContent = '';
-                window.location.href = 'dashboard.html';
+                msg.textContent = 'Login berhasil! Redirecting...';
+                msg.style.color = 'green';
+                
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 500);
             } else {
                 msg.textContent = response.message || 'Login gagal.';
+                msg.style.color = 'red';
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             }
         } catch (err) {
             console.error('❌ Login Error:', err);
             msg.textContent = 'Gagal terhubung ke server: ' + err.message;
+            msg.style.color = 'red';
             btn.disabled = false;
             btn.innerHTML = originalText;
         }
@@ -101,7 +147,16 @@ function initAppPage() {
         return;
     }
 
-    const user = JSON.parse(userStr);
+    let user;
+    try {
+        user = JSON.parse(userStr);
+    } catch (e) {
+        console.error('❌ User data corrupt, clearing...');
+        localStorage.clear();
+        window.location.href = 'index.html';
+        return;
+    }
+    
     loadSidebar(user);
 }
 
