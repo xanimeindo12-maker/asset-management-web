@@ -1,89 +1,85 @@
-<!-- sidebar.html -->
-<aside class="sidebar">
-    <div class="brand">
-        <div class="logo-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
+<aside class="modern-sidebar" id="sidebar">
+    <!-- Logo -->
+    <div class="sidebar-header">
+        <div class="hexagon-logo">
+            <i class="fa-solid fa-tower-broadcast"></i>
         </div>
         <div class="brand-text">
-            <h2>Management<br>Aset</h2>
-            <span>IT Desktop Support Engineer</span>
+            <h3>IT DSE MANAGEMENT</h3>
+            <span class="subtitle">OPERATIONAL HUB</span>
         </div>
     </div>
 
-    <nav class="menu-container">
-        <!-- 1. Dashboard Overview -->
-        <a href="dashboard.html" class="nav-link active" data-page="dashboard" data-target-file="dashboard.html">
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+        <a href="index.html" class="nav-item" data-page="dashboard">
             <i class="fa-solid fa-chart-line"></i>
             <span>Dashboard Overview</span>
         </a>
 
-        <!-- 2. Inventory & Assets (Dropdown) -->
-        <div class="nav-group">
-            <button class="nav-link dropdown-toggle" data-group="inventory" aria-expanded="false">
-                <div class="link-content">
+        <div class="nav-dropdown" data-dropdown="inventory">
+            <button class="dropdown-toggle">
+                <div class="dropdown-content">
                     <i class="fa-solid fa-box-open"></i>
                     <span>Inventory & Assets</span>
                 </div>
-                <i class="fa-solid fa-chevron-down arrow"></i>
+                <i class="fa-solid fa-chevron-down"></i>
             </button>
-            <ul class="submenu" id="sub-inventory">
-                <li><a href="inventory.html" data-page="all-assets" data-target-file="inventory.html">Semua Aset List</a></li>
-                <li><a href="accessories.html" data-page="spare-parts" data-target-file="accessories.html">Suku Cadang/Part</a></li>
-                <li><a href="borrowings.html" data-page="borrowing" data-target-file="borrowings.html">Peminjaman Aset</a></li>
-            </ul>
+            <div class="dropdown-menu">
+                <a href="semua-aset.html" class="dropdown-item">Semua Aset List</a>
+                <a href="suku-cadang.html" class="dropdown-item">Suku Cadang/Part</a>
+                <a href="peminjaman.html" class="dropdown-item">Peminjaman Aset</a>
+            </div>
         </div>
 
-        <!-- 3. Operational Activity (Dropdown) -->
-        <div class="nav-group">
-            <button class="nav-link dropdown-toggle" data-group="operational" aria-expanded="false">
-                <div class="link-content">
+        <div class="nav-dropdown" data-dropdown="operational">
+            <button class="dropdown-toggle">
+                <div class="dropdown-content">
                     <i class="fa-solid fa-briefcase"></i>
                     <span>Operational Activity</span>
                 </div>
-                <i class="fa-solid fa-chevron-down arrow"></i>
+                <i class="fa-solid fa-chevron-down"></i>
             </button>
-            <ul class="submenu" id="sub-operational">
-                <li><a href="dailylogs.html" data-page="daily-logs" data-target-file="dailylogs.html">Daily Activity Logs</a></li>
-                <li><a href="maintenance.html" data-page="maintenance-schedule" data-target-file="maintenance.html">Jadwal Maintenance</a></li>
-                <li><a href="pa_kpi.html" data-page="pa-kpi" data-target-file="pa_kpi.html">PA Performance KPI</a></li>
-            </ul>
+            <div class="dropdown-menu">
+                <a href="daily-logs.html" class="dropdown-item">Daily Activity Logs</a>
+                <a href="jadwal-maintenance.html" class="dropdown-item">Jadwal Maintenance</a>
+                <a href="pa-kpi.html" class="dropdown-item">PA Performance KPI</a>
+            </div>
         </div>
 
-        <!-- 4. Report Activity (Dropdown) -->
-        <div class="nav-group">
-            <button class="nav-link dropdown-toggle" data-group="report" aria-expanded="false">
-                <div class="link-content">
-                    <i class="fa-solid fa-file-lines"></i>
+        <div class="nav-dropdown" data-dropdown="report">
+            <button class="dropdown-toggle">
+                <div class="dropdown-content">
+                    <i class="fa-solid fa-file-alt"></i>
                     <span>Report Activity</span>
                 </div>
-                <i class="fa-solid fa-chevron-down arrow"></i>
+                <i class="fa-solid fa-chevron-down"></i>
             </button>
-            <ul class="submenu" id="sub-report">
-                <li><a href="evidence.html" data-page="evidence" data-target-file="evidence.html">Evidence Activity</a></li>
-                <li><a href="populasi_vendor.html" data-page="vendor-population" data-target-file="populasi_vendor.html">Populasi Vendor Unit</a></li>
-                <li><a href="status_sebaran.html" data-page="unit-distribution" data-target-file="status_sebaran.html">Status Sebaran Unit</a></li>
-                <li><a href="pica.html" data-page="pica" data-target-file="pica.html">PICA</a></li>
-            </ul>
+            <div class="dropdown-menu">
+                <a href="evidence.html" class="dropdown-item">Evidence Activity</a>
+                <a href="vendor-unit.html" class="dropdown-item">Populasi Vendor Unit</a>
+                <a href="sebaran-unit.html" class="dropdown-item">Status Sebaran Unit</a>
+                <a href="pica.html" class="dropdown-item">PICA</a>
+            </div>
         </div>
 
-        <!-- 5. Management User -->
-        <a href="management_user.html" class="nav-link" data-page="team-management" data-target-file="management_user.html">
+        <a href="kelola-tim.html" class="nav-item" data-page="team">
             <i class="fa-solid fa-users"></i>
-            <span>Management User</span>
+            <span>Kelola Tim</span>
         </a>
     </nav>
 
-    <!-- User Profile Bottom -->
-    <div class="user-profile">
-        <div class="avatar">A</div>
-        <div class="user-info">
-            <span class="name">Administrator</span>
-            <span class="role">ADMINISTRATOR</span>
+    <!-- User Profile -->
+    <div class="sidebar-footer">
+        <div class="user-profile">
+            <div class="user-avatar">A</div>
+            <div class="user-info">
+                <span class="user-name" id="user-name">Administrator</span>
+                <span class="user-role">ADMINISTRATOR</span>
+            </div>
+            <button class="logout-btn">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </button>
         </div>
-        <button class="logout-btn" onclick="handleLogout()">
-            <i class="fa-solid fa-right-from-bracket"></i>
-        </button>
     </div>
 </aside>
