@@ -5,26 +5,22 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxb_RaZ1V4C6jn
 const WORKER_URL = 'https://dse-proxy.xanimeindo12.workers.dev';
 
 // ==========================================
-// DETEKSI HALAMAN - IMPROVED
+// DETEKSI HALAMAN SAAT LOAD
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const pathname = window.location.pathname;
     const currentPage = pathname.split('/').pop().toLowerCase();
     
-    console.log('📄 Full pathname:', pathname);
     console.log('📄 Current page:', currentPage);
 
-    // ✅ Deteksi halaman login
     if (currentPage === 'login.html' || currentPage === 'login') {
         console.log('🔐 Initializing LOGIN page...');
         initLoginPage();
     } 
-    // ✅ Deteksi halaman index/root
     else if (currentPage === 'index.html' || currentPage === '' || currentPage === '/') {
-        console.log('📊 Initializing INDEX/DASHBOARD page...');
+        console.log('📊 Initializing DASHBOARD page...');
         handleIndexPage();
     } 
-    // ✅ Halaman lainnya (dashboard, inventory, dll)
     else {
         console.log('📱 Initializing APP page:', currentPage);
         initAppPage();
@@ -32,21 +28,16 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
-// HANDLE INDEX PAGE
+// HANDLE INDEX PAGE (REDIRECT LOGIC)
 // ==========================================
 function handleIndexPage() {
     const token = localStorage.getItem('asset_token');
     const userStr = localStorage.getItem('asset_user');
 
-    console.log('🔍 Checking auth - Token:', token ? 'exists' : 'null');
-
-    // Kalau sudah login, load dashboard
     if (token && userStr) {
         console.log('✅ User logged in, loading dashboard...');
         initAppPage();
-    } 
-    // Kalau belum login, redirect ke login.html
-    else {
+    } else {
         console.log('⚠️ Not logged in, redirecting to login.html...');
         window.location.href = 'login.html';
     }
@@ -58,39 +49,49 @@ function handleIndexPage() {
 function initLoginPage() {
     console.log('🔐 initLoginPage() called');
     
-    // Cek apakah sudah login
     const existingToken = localStorage.getItem('asset_token');
     const existingUser = localStorage.getItem('asset_user');
     
-    console.log('🔍 Checking existing session...');
-    
     if (existingToken && existingUser) {
         console.log('✅ Already logged in, redirecting to index.html');
-        // Tunggu sebentar biar tidak terlalu cepat
         setTimeout(() => {
             window.location.href = 'index.html';
         }, 100);
         return;
     }
 
-    console.log('📝 Setting up login form...');
-    
     const form = document.getElementById('login-form');
     if (!form) {
         console.error('❌ Login form NOT found!');
         return;
     }
 
-    // ✅ PENTING: Hapus semua event listener lama
+    // Toggle Password Visibility
+    const togglePassword = document.getElementById('togglePassword');
+    if (togglePassword) {
+        togglePassword.addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    }
+
+    // Clone form untuk hapus event listener lama
     const newForm = form.cloneNode(true);
     form.parentNode.replaceChild(newForm, form);
 
-    // Tambahkan event listener yang baru
     newForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         e.stopPropagation();
-        
-        console.log('📝 Login form submitted');
         
         const btn = document.getElementById('btn-login');
         const msg = document.getElementById('login-msg');
@@ -104,8 +105,6 @@ function initLoginPage() {
             return;
         }
 
-        console.log('🔑 Attempting login for:', username);
-
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connecting...';
         msg.textContent = '';
@@ -114,17 +113,11 @@ function initLoginPage() {
             const url = `${APPS_SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
             const proxyUrl = `${WORKER_URL}?url=${encodeURIComponent(url)}`;
             
-            console.log('📡 Fetching:', proxyUrl);
-            
             const response = await fetch(proxyUrl, {
                 method: 'GET',
                 redirect: 'follow',
-                headers: {
-                    'Accept': 'application/json'
-                }
+                headers: { 'Accept': 'application/json' }
             });
-
-            console.log('📥 Response status:', response.status);
 
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -136,16 +129,13 @@ function initLoginPage() {
             if (data.success && data.data) {
                 const { token, user } = data.data;
                 
-                console.log('✅ Login successful, saving to localStorage');
                 localStorage.setItem('asset_token', token);
                 localStorage.setItem('asset_user', JSON.stringify(user));
                 
                 msg.textContent = '✅ Login berhasil! Redirecting...';
                 msg.style.color = 'green';
                 
-                // Delay redirect untuk UX yang lebih baik
                 setTimeout(() => {
-                    console.log('🚀 Redirecting to index.html');
                     window.location.href = 'index.html';
                 }, 1000);
             } else {
@@ -161,40 +151,17 @@ function initLoginPage() {
             btn.disabled = false;
             btn.innerHTML = originalText;
         }
-    }, { passive: false });
-
-    console.log('✅ Login form setup complete');
-}
-// Toggle Password Visibility
-const togglePassword = document.getElementById('togglePassword');
-if (togglePassword) {
-    togglePassword.addEventListener('click', function() {
-        const passwordInput = document.getElementById('password');
-        const icon = this.querySelector('i');
-        
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            passwordInput.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        }
     });
- }
+}
 
 // ==========================================
-// LOGIKA HALAMAN APP
+// LOGIKA HALAMAN APP (DASHBOARD, DLL)
 // ==========================================
 function initAppPage() {
-    console.log('📱 initAppPage() called');
-    
     const token = localStorage.getItem('asset_token');
     const userStr = localStorage.getItem('asset_user');
 
     if (!token || !userStr) {
-        console.log('⚠️ No auth found, redirecting to login.html');
         window.location.href = 'login.html';
         return;
     }
@@ -202,133 +169,230 @@ function initAppPage() {
     let user;
     try {
         user = JSON.parse(userStr);
-        console.log('👤 User loaded:', user);
     } catch (e) {
-        console.error('❌ User data corrupt, clearing storage');
         localStorage.clear();
         window.location.href = 'login.html';
         return;
     }
     
     loadSidebar(user);
+    
+    // Load data dashboard khusus
+    updateDashboardUserInfo(user);
+    loadActivityData();
 }
 
 // ==========================================
-// LOAD SIDEBAR
+// LOAD SIDEBAR DARI sidebar.html
 // ==========================================
 async function loadSidebar(user) {
-    console.log('📋 Loading sidebar...');
-    
     const container = document.getElementById('sidebar-container');
-    if (!container) {
-        console.error('❌ Sidebar container not found');
-        return;
-    }
+    if (!container) return;
 
     try {
         const response = await fetch('sidebar.html');
         if (!response.ok) throw new Error('Sidebar not found');
         
         container.innerHTML = await response.text();
-        console.log('✅ Sidebar loaded');
 
-        const nameEl = container.querySelector('.user-info .name');
-        const roleEl = container.querySelector('.user-info .role');
-        const avatarEl = container.querySelector('.avatar');
+        // Update user info di sidebar
+        const nameEl = container.querySelector('#user-name');
+        const roleEl = container.querySelector('.user-role');
+        const avatarEl = container.querySelector('.user-avatar');
         
         if (nameEl) nameEl.textContent = user.displayName || user.username;
         if (roleEl) roleEl.textContent = user.role || 'USER';
         if (avatarEl) avatarEl.textContent = (user.displayName || user.username || 'U').charAt(0).toUpperCase();
 
+        // Setup logout button
         const logoutBtn = container.querySelector('.logout-btn');
         if (logoutBtn) {
-            logoutBtn.addEventListener('click', () => {
-                console.log('🚪 User logging out');
-                localStorage.clear();
-                window.location.href = 'login.html';
-            });
+            logoutBtn.addEventListener('click', handleLogout);
         }
 
-        highlightMenuFromURL();
-        setupSidebarInteractions();
-
+        // ✅ SETUP SIDEBAR INTERACTIVE
+        setupSidebarInteractive();
+        
     } catch (error) {
         console.error("❌ Sidebar error:", error);
         container.innerHTML = '<p style="padding:20px;color:red;">Gagal memuat menu.</p>';
     }
 }
 
-function highlightMenuFromURL() {
-    const currentPage = window.location.pathname.split('/').pop().replace('.html', '') || 'index';
-
-    document.querySelectorAll('.nav-link, .submenu a').forEach(el => {
-        el.classList.remove('active', 'active-sub');
-    });
-    document.querySelectorAll('.nav-group').forEach(el => {
-        el.classList.remove('open');
-    });
-
-    const activeLink = document.querySelector(`[data-target-file="${currentPage}.html"]`);
+// ==========================================
+// SIDEBAR INTERACTIVE - FUNGSI UTAMA
+// ==========================================
+function setupSidebarInteractive() {
+    console.log('🎯 Setting up sidebar interactions...');
     
-    if (activeLink) {
-        if (activeLink.closest('.submenu')) {
-            activeLink.classList.add('active-sub');
-            const parentGroup = activeLink.closest('.nav-group');
-            if (parentGroup) {
-                parentGroup.classList.add('open');
-                const toggle = parentGroup.querySelector('.dropdown-toggle');
-                if (toggle) toggle.classList.add('active');
-            }
-        } else {
-            activeLink.classList.add('active');
-        }
-    }
-}
-
-function setupSidebarInteractions() {
+    // 1. Highlight menu aktif berdasarkan URL
+    highlightActiveMenu();
+    
+    // 2. Setup dropdown toggle handlers
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
     dropdownToggles.forEach(toggle => {
         toggle.addEventListener('click', function(e) {
             e.preventDefault();
             
-            const group = this.closest('.nav-group');
-            const isOpen = group.classList.contains('open');
+            const parentDropdown = this.closest('.nav-dropdown');
+            const dropdownId = parentDropdown.getAttribute('data-dropdown');
             
-            document.querySelectorAll('.nav-group').forEach(g => {
-                g.classList.remove('open');
-                const otherToggle = g.querySelector('.dropdown-toggle');
-                if (otherToggle) otherToggle.setAttribute('aria-expanded', 'false');
+            handleDropdownClick(dropdownId);
+        });
+    });
+    
+    // 3. Setup dropdown item click handlers
+    const dropdownItems = document.querySelectorAll('.dropdown-item');
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Highlight item yang diklik
+            document.querySelectorAll('.dropdown-item').forEach(i => {
+                i.classList.remove('active');
             });
+            this.classList.add('active');
             
-            if (!isOpen) {
-                group.classList.add('open');
-                this.setAttribute('aria-expanded', 'true');
-                
-                const firstSubLink = group.querySelector('.submenu a');
-                if (firstSubLink) {
-                    window.location.href = firstSubLink.href;
-                }
+            // Parent dropdown juga ikut aktif
+            const parentDropdown = this.closest('.nav-dropdown');
+            if (parentDropdown) {
+                parentDropdown.classList.add('active');
             }
         });
     });
-}
-// Toggle Dropdown Menu
-function toggleDropdown(id) {
-    const dropdown = document.getElementById(`dropdown-${id}`);
-    const allDropdowns = document.querySelectorAll('.dropdown-menu');
     
-    // Close all dropdowns
-    allDropdowns.forEach(d => {
-        if (d.id !== `dropdown-${id}`) {
-            d.classList.remove('show');
-        }
+    // 4. Setup nav-item click handlers
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Reset semua
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('active'));
+            document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+            
+            // Highlight yang diklik
+            this.classList.add('active');
+        });
     });
-    
-    // Toggle current
-    dropdown.classList.toggle('show');
 }
 
-// Handle Logout
+// ==========================================
+// HIGHLIGHT MENU AKTIF BERDASARKAN URL
+// ==========================================
+function highlightActiveMenu() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const currentPageName = currentPage.replace('.html', '') || 'index';
+    
+    console.log('🎯 Highlighting menu for:', currentPage);
+    
+    // Reset semua active states
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
+        dropdown.classList.remove('active');
+        const menu = dropdown.querySelector('.dropdown-menu');
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+        if (menu) menu.classList.remove('show');
+        if (toggle) toggle.classList.remove('active');
+    });
+    
+    // Case 1: Halaman utama (index.html / dashboard)
+    if (currentPage === 'index.html' || currentPage === '') {
+        const dashboardLink = document.querySelector('.nav-item[data-page="dashboard"]');
+        if (dashboardLink) {
+            dashboardLink.classList.add('active');
+        }
+        return;
+    }
+    
+    // Case 2: Halaman dengan dropdown (sub-page)
+    const activeDropdownItem = document.querySelector(`.dropdown-item[href="${currentPage}"]`);
+    if (activeDropdownItem) {
+        // Highlight sub-item
+        activeDropdownItem.classList.add('active');
+        
+        // Highlight parent dropdown
+        const parentDropdown = activeDropdownItem.closest('.nav-dropdown');
+        if (parentDropdown) {
+            parentDropdown.classList.add('active');
+            
+            // Buka dropdown menu
+            const menu = parentDropdown.querySelector('.dropdown-menu');
+            const toggle = parentDropdown.querySelector('.dropdown-toggle');
+            
+            if (menu) menu.classList.add('show');
+            if (toggle) toggle.classList.add('active');
+        }
+        return;
+    }
+    
+    // Case 3: Halaman nav-item biasa (kelola-tim, dll)
+    const activeNavItem = document.querySelector(`.nav-item[href="${currentPage}"]`);
+    if (activeNavItem) {
+        activeNavItem.classList.add('active');
+    }
+}
+
+// ==========================================
+// HANDLE DROPDOWN CLICK
+// ==========================================
+function handleDropdownClick(dropdownId) {
+    const clickedDropdown = document.querySelector(`[data-dropdown="${dropdownId}"]`);
+    if (!clickedDropdown) return;
+    
+    const dropdownMenu = clickedDropdown.querySelector('.dropdown-menu');
+    const dropdownToggle = clickedDropdown.querySelector('.dropdown-toggle');
+    const firstItem = dropdownMenu.querySelector('.dropdown-item');
+    
+    const isOpen = dropdownMenu.classList.contains('show');
+    
+    // Close semua dropdown lain
+    closeAllDropdowns();
+    
+    if (isOpen) {
+        // Kalau sudah terbuka, tutup saja
+        dropdownMenu.classList.remove('show');
+        dropdownToggle.classList.remove('active');
+        clickedDropdown.classList.remove('active');
+    } else {
+        // Buka dropdown ini
+        dropdownMenu.classList.add('show');
+        dropdownToggle.classList.add('active');
+        clickedDropdown.classList.add('active');
+        
+        // Auto navigate ke item pertama setelah 300ms
+        if (firstItem) {
+            setTimeout(() => {
+                window.location.href = firstItem.getAttribute('href');
+            }, 300);
+        }
+    }
+}
+
+// ==========================================
+// CLOSE ALL DROPDOWNS
+// ==========================================
+function closeAllDropdowns() {
+    document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
+        dropdown.classList.remove('active');
+    });
+    
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        menu.classList.remove('show');
+    });
+    
+    document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
+        toggle.classList.remove('active');
+    });
+}
+
+// ==========================================
+// HANDLE LOGOUT
+// ==========================================
 function handleLogout() {
     if (confirm('Yakin ingin logout?')) {
         localStorage.clear();
@@ -336,81 +400,61 @@ function handleLogout() {
     }
 }
 
-// Load Activity Data
+// ==========================================
+// UPDATE USER INFO DI DASHBOARD
+// ==========================================
+function updateDashboardUserInfo(user) {
+    const userName = document.getElementById('user-name');
+    const welcomeName = document.getElementById('welcome-name');
+    
+    if (userName) userName.textContent = user.displayName || user.username;
+    if (welcomeName) welcomeName.textContent = user.role || 'Desktop Support Engineer';
+}
+
+// ==========================================
+// LOAD ACTIVITY DATA
+// ==========================================
 async function loadActivityData() {
-    try {
-        // Contoh data - nanti bisa diambil dari API
-        const activities = [
-            {
-                title: 'Jadwal PM - BTSJAGINB24005',
-                badge: 'PM PROGRAM',
-                desc: 'Rencana Pemeliharaan Berkala • PIC: Arief',
-                date: '2026-06-08',
-                type: 'PREVENTIVE PM (PENDING)'
-            },
-            {
-                title: 'Jadwal PM - BTSJAGINB24001',
-                badge: 'PM PROGRAM',
-                desc: 'Rencana Pemeliharaan Berkala • PIC: Waluyo',
-                date: '2026-06-05',
-                type: 'PREVENTIVE PM (PENDING)'
-            },
-            {
-                title: 'Jadwal PM - BTSJAGINB23009',
-                badge: 'PM PROGRAM',
-                desc: 'Rencana Pemeliharaan Berkala • PIC: Risky Tri',
-                date: '2026-06-04',
-                type: 'PREVENTIVE PM (PENDING)'
-            }
-        ];
+    const container = document.getElementById('activity-list');
+    if (!container) return;
+    
+    const activities = [
+        {
+            title: 'Jadwal PM - BTSJAGINB24005',
+            badge: 'PM PROGRAM',
+            desc: 'Rencana Pemeliharaan Berkala • PIC: Arief',
+            date: '2026-06-08'
+        },
+        {
+            title: 'Jadwal PM - BTSJAGINB24001',
+            badge: 'PM PROGRAM',
+            desc: 'Rencana Pemeliharaan Berkala • PIC: Waluyo',
+            date: '2026-06-05'
+        },
+        {
+            title: 'Jadwal PM - BTSJAGINB23009',
+            badge: 'PM PROGRAM',
+            desc: 'Rencana Pemeliharaan Berkala • PIC: Risky Tri',
+            date: '2026-06-04'
+        }
+    ];
 
-        const container = document.getElementById('activity-list');
-        if (container) {
-            container.innerHTML = activities.map(act => `
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fa-regular fa-clock"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-title">${act.title}</div>
-                        <div class="activity-desc">${act.desc}</div>
-                        <div class="activity-meta">
-                            <span class="activity-badge">${act.badge}</span>
-                            <span class="activity-date">
-                                <i class="fa-regular fa-calendar"></i>
-                                ${act.date}
-                            </span>
-                        </div>
-                    </div>
+    container.innerHTML = activities.map(act => `
+        <div class="activity-item">
+            <div class="activity-icon">
+                <i class="fa-regular fa-clock"></i>
+            </div>
+            <div class="activity-content">
+                <div class="activity-title">${act.title}</div>
+                <div class="activity-desc">${act.desc}</div>
+                <div class="activity-meta">
+                    <span class="activity-badge">${act.badge}</span>
+                    <span class="activity-date">
+                        <i class="fa-regular fa-calendar"></i>
+                        ${act.date}
+                    </span>
                 </div>
-            `).join('');
-        }
-    } catch (error) {
-        console.error('Error loading activity:', error);
-    }
-}
-
-// Update User Info di Dashboard
-function updateDashboardUserInfo() {
-    const userStr = localStorage.getItem('asset_user');
-    if (userStr) {
-        try {
-            const user = JSON.parse(userStr);
-            const userName = document.getElementById('user-name');
-            const welcomeName = document.getElementById('welcome-name');
-            
-            if (userName) userName.textContent = user.displayName || user.username;
-            if (welcomeName) welcomeName.textContent = user.role || 'Desktop Support Engineer';
-        } catch (e) {
-            console.error('Error updating user info:', e);
-        }
-    }
-}
-
-// Panggil saat halaman dashboard load
-if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
-    document.addEventListener('DOMContentLoaded', () => {
-        updateDashboardUserInfo();
-        loadActivityData();
-    });
+            </div>
+        </div>
+    `).join('');
 }
