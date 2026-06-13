@@ -3,48 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semua Aset List - Management Aset</title>
+    <title>Inventory - IT DSE Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="dashboard-body">
+    <!-- ✅ Sidebar di-load dari sidebar.html -->
     <div id="sidebar-container"></div>
-    <main class="content">
+    
+    <main class="main-content">
         <header class="top-bar">
-            <div class="breadcrumb">Inventory & Assets / <span class="current-page">Aset List</span></div>
-            <div class="top-actions">
-                <button class="btn-primary"><i class="fa-solid fa-plus"></i> Tambah Aset</button>
+            <div class="page-title">
+                <h1>Semua Aset List</h1>
             </div>
         </header>
-
-        <div id="page-content">
-            <div class="card">
-                <h3>Inventory Aset </h3>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Asset Tag</th>
-                            <th>Type</th>
-                            <th>Assigned To</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>INV-001</td><td>CN004623</td><td>Laptop</td><td>HERUNAS</td><td><span class="status-badge active">In Use</span></td></tr>
-                        <!-- Data akan diisi via JS nanti -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        
+        <section class="welcome-section">
+            <h2>Kelola Inventory & Aset</h2>
+            <p>Daftar semua aset IT dalam sistem.</p>
+        </section>
+        
+        <!-- Konten inventory di sini -->
     </main>
-
+    
     <script src="script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            initPage('all-assets'); // Sesuai data-page di sidebar
-        });
-    </script>
 </body>
 </html>
