@@ -3,48 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Management User</title>
+    <title>Kelola Tim - IT DSE Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .role-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .role-admin { background: #fee2e2; color: #dc2626; }
+        .role-engineer { background: #dbeafe; color: #2563eb; }
+        .role-user { background: #d1fae5; color: #059669; }
+        .status-active { background: #d1fae5; color: #059669; }
+        .status-inactive { background: #f3f4f6; color: #6b7280; }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #4f46e5;
+            font-size: 16px;
+        }
+    </style>
 </head>
-<body>
+<body class="dashboard-body">
     <div id="sidebar-container"></div>
-    <main class="content">
+    <main class="main-content">
         <header class="top-bar">
-            <div class="breadcrumb">User Management / <span class="current-page">Semua User List</span></div>
-            <div class="top-actions">
-                <button class="btn-primary"><i class="fa-solid fa-plus"></i> Tambah User</button>
+            <div class="page-title">
+                <h1>Kelola Tim</h1>
+                <p class="subtitle">User & Team Management</p>
             </div>
+            <button class="btn-primary" onclick="alert('Form tambah user akan segera hadir!')">
+                <i class="fa-solid fa-user-plus"></i> TAMBAH USER
+            </button>
         </header>
 
-        <div id="page-content">
-            <div class="card">
-                <h3>Semua Aset List</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Asset Tag</th>
-                            <th>Type</th>
-                            <th>Assigned To</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>INV-001</td><td>CN004623</td><td>Laptop</td><td>HERUNAS</td><td><span class="status-badge active">In Use</span></td></tr>
-                        <!-- Data akan diisi via JS nanti -->
-                    </tbody>
-                </table>
-            </div>
+        <div class="filter-bar" style="margin-bottom:20px;">
+            <input type="text" placeholder="Cari nama, username, atau email..." style="flex:1; padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;">
+            <select class="filter-select" style="padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;">
+                <option>Semua Role</option>
+                <option>Administrator</option>
+                <option>IT Engineer</option>
+                <option>User</option>
+            </select>
+            <select class="filter-select" style="padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;">
+                <option>Semua Status</option>
+                <option>Active</option>
+                <option>Inactive</option>
+            </select>
         </div>
-    </main>
 
+        <section class="table-section">
+            <div class="table-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <h3><i class="fa-solid fa-users"></i> TEAM MEMBERS</h3>
+                <span class="badge live">8 ACTIVE USERS</span>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>USER</th>
+                        <th>USERNAME</th>
+                        <th>ROLE</th>
+                        <th>DEPARTEMEN</th>
+                        <th>EMAIL</th>
+                        <th>STATUS</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <div class="user-avatar">A</div>
+                                <div>
+                                    <div style="font-weight:700;color:#1a1a1a">Admin System</div>
+                                    <div style="font-size:11px;color:#6b7280">admin@itdse.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><strong>administrator</strong></td>
+                        <td><span class="role-badge role-admin">ADMINISTRATOR</span></td>
+                        <td>IT Dept</td>
+                        <td>admin@itdse.com</td>
+                        <td><span class="status-badge status-active">ACTIVE</span></td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <div class="user-avatar" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#059669">MT</div>
+                                <div>
+                                    <div style="font-weight:700;color:#1a1a1a">Muhammad Taufik</div>
+                                    <div style="font-size:11px;color:#6b7280">taufik@itdse.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><strong>taufik</strong></td>
+                        <td><span class="role-badge role-engineer">IT ENGINEER</span></td>
+                        <td>IT Dept</td>
+                        <td>taufik@itdse.com</td>
+                        <td><span class="status-badge status-active">ACTIVE</span></td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <div class="user-avatar" style="background:linear-gradient(135deg,#fef3c7,#fde68a);color:#d97706">AR</div>
+                                <div>
+                                    <div style="font-weight:700;color:#1a1a1a">Arief</div>
+                                    <div style="font-size:11px;color:#6b7280">arief@itdse.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><strong>arief</strong></td>
+                        <td><span class="role-badge role-engineer">IT ENGINEER</span></td>
+                        <td>IT Dept</td>
+                        <td>arief@itdse.com</td>
+                        <td><span class="status-badge status-active">ACTIVE</span></td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <div class="user-avatar" style="background:linear-gradient(135deg,#fee2e2,#fecaca);color:#dc2626">WH</div>
+                                <div>
+                                    <div style="font-weight:700;color:#1a1a1a">Wahyu</div>
+                                    <div style="font-size:11px;color:#6b7280">wahyu@itdse.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><strong>wahyu</strong></td>
+                        <td><span class="role-badge role-engineer">IT ENGINEER</span></td>
+                        <td>IT Dept</td>
+                        <td>wahyu@itdse.com</td>
+                        <td><span class="status-badge status-active">ACTIVE</span></td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <div class="user-avatar" style="background:linear-gradient(135deg,#f3f4f6,#e5e7eb);color:#6b7280">U45</div>
+                                <div>
+                                    <div style="font-weight:700;color:#1a1a1a">User 45</div>
+                                    <div style="font-size:11px;color:#6b7280">user45@company.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><strong>user45</strong></td>
+                        <td><span class="role-badge role-user">USER</span></td>
+                        <td>Procurement</td>
+                        <td>user45@company.com</td>
+                        <td><span class="status-badge status-active">ACTIVE</span></td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
     <script src="script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            initPage('team-management'); // Sesuai data-page di sidebar
-        });
-    </script>
 </body>
 </html>
