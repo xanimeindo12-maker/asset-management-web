@@ -1,11 +1,15 @@
 // ==========================================
-// KONFIGURASI
+// IT COMMAND CENTER - COMPLETE JAVASCRIPT
+// ==========================================
+
+// ==========================================
+// CONFIGURATION
 // ==========================================
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxb_RaZ1V4C6jn8QDIiutCjdnVqEahh8w6iGvaH-8-5I_OZfVUF2MTgFFijX0AntlO/exec';
 const WORKER_URL = 'https://dse-proxy.xanimeindo12.workers.dev';
 
 // ==========================================
-// DETEKSI HALAMAN SAAT LOAD
+// PAGE INITIALIZATION
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const pathname = window.location.pathname;
@@ -31,10 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // HANDLE INDEX PAGE
 // ==========================================
 function handleIndexPage() {
-    const token = localStorage.getItem('asset_token');
-    const userStr = localStorage.getItem('asset_user');
-
-    if (token && userStr) {
+    const token = localStorage.getItem('itcc-current-user');
+    
+    if (token) {
         console.log('✅ User logged in, loading dashboard...');
         initAppPage();
     } else {
@@ -44,124 +47,60 @@ function handleIndexPage() {
 }
 
 // ==========================================
-// LOGIKA LOGIN PAGE
+// LOGIN PAGE
 // ==========================================
 function initLoginPage() {
     console.log('🔐 initLoginPage() called');
     
-    const existingToken = localStorage.getItem('asset_token');
-    const existingUser = localStorage.getItem('asset_user');
+    const existingUser = localStorage.getItem('itcc-current-user');
     
-    if (existingToken && existingUser) {
-        console.log('✅ Already logged in, redirecting to index.html');
+    if (existingUser) {
+        console.log('✅ Already logged in, redirecting to dashboard.html');
         setTimeout(() => {
-            window.location.href = 'index.html';
+            window.location.href = 'dashboard.html';
         }, 100);
         return;
     }
 
-    const form = document.getElementById('login-form');
+    const form = document.getElementById('loginForm');
     if (!form) {
         console.error('❌ Login form NOT found!');
         return;
     }
 
-    // Toggle Password Visibility
-    const togglePassword = document.getElementById('togglePassword');
-    if (togglePassword) {
-        togglePassword.addEventListener('click', function() {
-            const passwordInput = document.getElementById('password');
-            const icon = this.querySelector('i');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        });
-    }
-
-    // Clone form untuk hapus event listener lama
-    const newForm = form.cloneNode(true);
-    form.parentNode.replaceChild(newForm, form);
-
-    newForm.addEventListener('submit', async function(e) {
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
-        e.stopPropagation();
         
-        const btn = document.getElementById('btn-login');
-        const msg = document.getElementById('login-msg');
-        const originalText = btn.innerHTML || 'Sign In';
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
-
+        const errorDiv = document.getElementById('loginError');
+        
         if (!username || !password) {
-            msg.textContent = 'Username dan Password wajib diisi!';
-            msg.style.color = 'red';
+            if (errorDiv) {
+                errorDiv.textContent = 'Username dan password wajib diisi!';
+                errorDiv.style.display = 'block';
+            }
             return;
         }
 
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connecting...';
-        msg.textContent = '';
-
-        try {
-            const url = `${APPS_SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
-            const proxyUrl = `${WORKER_URL}?url=${encodeURIComponent(url)}`;
-            
-            const response = await fetch(proxyUrl, {
-                method: 'GET',
-                redirect: 'follow',
-                headers: { 'Accept': 'application/json' }
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            
-            const data = await response.json();
-            console.log('📦 Response data:', data);
-
-            if (data.success && data.data) {
-                const { token, user } = data.data;
-                
-                localStorage.setItem('asset_token', token);
-                localStorage.setItem('asset_user', JSON.stringify(user));
-                
-                msg.textContent = '✅ Login berhasil! Redirecting...';
-                msg.style.color = 'green';
-                
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1000);
-            } else {
-                msg.textContent = data.message || 'Login gagal.';
-                msg.style.color = 'red';
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
-        } catch (err) {
-            console.error('❌ Login Error:', err);
-            msg.textContent = 'Error: ' + err.message;
-            msg.style.color = 'red';
-            btn.disabled = false;
-            btn.innerHTML = originalText;
-        }
+        // Simple authentication (in production, this would call an API)
+        const user = {
+            name: username,
+            role: 'Administrator'
+        };
+        
+        localStorage.setItem('itcc-current-user', JSON.stringify(user));
+        window.location.href = 'dashboard.html';
     });
 }
 
 // ==========================================
-// LOGIKA HALAMAN APP
+// APP PAGE INITIALIZATION
 // ==========================================
 function initAppPage() {
-    const token = localStorage.getItem('asset_token');
-    const userStr = localStorage.getItem('asset_user');
+    const userStr = localStorage.getItem('itcc-current-user');
 
-    if (!token || !userStr) {
+    if (!userStr) {
         window.location.href = 'login.html';
         return;
     }
@@ -176,12 +115,10 @@ function initAppPage() {
     }
     
     loadSidebar(user);
-    updateDashboardUserInfo(user);
-    loadActivityData();
 }
 
 // ==========================================
-// LOAD SIDEBAR (IMPROVED TIMING)
+// LOAD SIDEBAR
 // ==========================================
 async function loadSidebar(user) {
     const container = document.getElementById('sidebar-container');
@@ -192,16 +129,19 @@ async function loadSidebar(user) {
         if (!response.ok) throw new Error('Sidebar not found');
         
         container.innerHTML = await response.text();
-        console.log('✅ Sidebar loaded');
+        console.log('✅ Sidebar HTML loaded');
 
         // Update user info
         const nameEl = container.querySelector('#user-name');
         const roleEl = container.querySelector('.user-role');
         const avatarEl = container.querySelector('.user-avatar');
         
-        if (nameEl) nameEl.textContent = user.displayName || user.username;
-        if (roleEl) roleEl.textContent = user.role || 'USER';
-        if (avatarEl) avatarEl.textContent = (user.displayName || user.username || 'U').charAt(0).toUpperCase();
+        if (nameEl) nameEl.textContent = user.name || 'Administrator';
+        if (roleEl) roleEl.textContent = user.role || 'ADMIN';
+        if (avatarEl) {
+            const initials = (user.name || 'AD').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+            avatarEl.textContent = initials;
+        }
 
         // Setup logout
         const logoutBtn = container.querySelector('.logout-btn');
@@ -209,10 +149,10 @@ async function loadSidebar(user) {
             logoutBtn.addEventListener('click', handleLogout);
         }
 
-        // Tunggu sebentar biar DOM benar-benar ready
+        // Setup sidebar interactions
         setTimeout(() => {
             setupSidebarInteractive();
-        }, 100);
+        }, 200);
         
     } catch (error) {
         console.error("❌ Sidebar error:", error);
@@ -221,67 +161,122 @@ async function loadSidebar(user) {
 }
 
 // ==========================================
-// SIDEBAR INTERACTIVE
+// SIDEBAR INTERACTIONS
 // ==========================================
 function setupSidebarInteractive() {
     console.log('🎯 Setting up sidebar interactions...');
     
-    // 1. Highlight menu aktif
+    // Highlight active menu
     highlightActiveMenu();
     
-    // 2. Setup dropdown toggle handlers - PAKAI DELEGATION
-    document.addEventListener('click', function(e) {
-        const toggle = e.target.closest('.dropdown-toggle');
-        if (toggle) {
+    // Setup dropdown toggles
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             
-            const parentDropdown = toggle.closest('.nav-dropdown');
-            const dropdownId = parentDropdown.getAttribute('data-dropdown');
+            const parentDropdown = this.closest('.nav-dropdown');
+            const dropdownMenu = parentDropdown.querySelector('.dropdown-menu');
+            const firstItem = dropdownMenu.querySelector('.dropdown-item');
             
-            handleDropdownClick(dropdownId);
-        }
+            const isOpen = dropdownMenu.classList.contains('show');
+            
+            // Close all other dropdowns
+            document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
+                if (dropdown !== parentDropdown) {
+                    dropdown.classList.remove('active');
+                    const menu = dropdown.querySelector('.dropdown-menu');
+                    const toggle = dropdown.querySelector('.dropdown-toggle');
+                    if (menu) {
+                        menu.classList.remove('show');
+                        menu.style.display = 'none';
+                    }
+                    if (toggle) toggle.classList.remove('active');
+                }
+            });
+            
+            // Close nav-items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            if (isOpen) {
+                // Close this dropdown
+                dropdownMenu.classList.remove('show');
+                dropdownMenu.style.display = 'none';
+                this.classList.remove('active');
+                parentDropdown.classList.remove('active');
+                
+                // Highlight dashboard
+                const dashboardLink = document.querySelector('.nav-item[data-page="dashboard"]');
+                if (dashboardLink) dashboardLink.classList.add('active');
+            } else {
+                // Open this dropdown
+                dropdownMenu.classList.add('show');
+                dropdownMenu.style.display = 'block';
+                this.classList.add('active');
+                parentDropdown.classList.add('active');
+                
+                // Auto-navigate to first item
+                if (firstItem) {
+                    setTimeout(() => {
+                        const href = firstItem.getAttribute('href');
+                        if (href && href !== '#') {
+                            console.log(' Auto-navigating to:', href);
+                            window.location.href = href;
+                        }
+                    }, 300);
+                }
+            }
+        });
     });
     
-    // 3. Setup dropdown item click handlers
-    document.addEventListener('click', function(e) {
-        const item = e.target.closest('.dropdown-item');
-        if (item) {
+    // Setup dropdown item clicks
+    const dropdownItems = document.querySelectorAll('.dropdown-item');
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function() {
             document.querySelectorAll('.dropdown-item').forEach(i => {
                 i.classList.remove('active');
             });
-            item.classList.add('active');
+            this.classList.add('active');
             
-            const parentDropdown = item.closest('.nav-dropdown');
+            const parentDropdown = this.closest('.nav-dropdown');
             if (parentDropdown) {
                 parentDropdown.classList.add('active');
             }
-        }
+        });
     });
     
-    // 4. Setup nav-item click handlers
-    document.addEventListener('click', function(e) {
-        const item = e.target.closest('.nav-item');
-        if (item && !item.closest('.nav-dropdown')) {
+    // Setup nav-item clicks
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', function() {
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('active'));
             document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
-            item.classList.add('active');
-        }
+            this.classList.add('active');
+        });
     });
 }
 
 // ==========================================
-// HIGHLIGHT MENU AKTIF (SIMPLIFIED & ROBUST)
+// HIGHLIGHT ACTIVE MENU
 // ==========================================
 function highlightActiveMenu() {
     const currentPage = window.location.pathname.split('/').pop();
     
     console.log('🎯 Highlighting menu for:', currentPage);
     
-    // Reset semua dulu
-    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-    document.querySelectorAll('.dropdown-item').forEach(item => item.classList.remove('active'));
+    // Reset all
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
     document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
         dropdown.classList.remove('active');
         const menu = dropdown.querySelector('.dropdown-menu');
@@ -294,127 +289,57 @@ function highlightActiveMenu() {
     });
     
     // Dashboard
-    if (currentPage === 'index.html' || currentPage === '') {
+    if (currentPage === 'dashboard.html' || currentPage === 'index.html' || currentPage === '') {
         const dashboardLink = document.querySelector('.nav-item[data-page="dashboard"]');
-        if (dashboardLink) dashboardLink.classList.add('active');
+        if (dashboardLink) {
+            dashboardLink.classList.add('active');
+        }
         return;
     }
     
-    // Cari dropdown item yang cocok
-    const activeItem = document.querySelector(`.dropdown-item[href="${currentPage}"]`);
-    if (activeItem) {
-        console.log('✅ Found active item:', activeItem.textContent.trim());
+    // Sub-page
+    const activeDropdownItem = document.querySelector(`.dropdown-item[href="${currentPage}"]`);
+    
+    if (activeDropdownItem) {
+        console.log('✅ Found active dropdown item:', activeDropdownItem.textContent.trim());
         
-        // Highlight item
-        activeItem.classList.add('active');
+        activeDropdownItem.classList.add('active');
         
-        // Buka parent dropdown
-        const parentDropdown = activeItem.closest('.nav-dropdown');
+        const parentDropdown = activeDropdownItem.closest('.nav-dropdown');
         if (parentDropdown) {
-            console.log('✅ Opening parent dropdown');
+            console.log('✅ Forcing parent dropdown open...');
+            
             parentDropdown.classList.add('active');
             
             const menu = parentDropdown.querySelector('.dropdown-menu');
             const toggle = parentDropdown.querySelector('.dropdown-toggle');
             
-            // PAKSA buka dengan inline style
             if (menu) {
                 menu.style.display = 'block';
                 menu.classList.add('show');
-                console.log('✅ Menu display set to block');
+                console.log('✅ Menu forced open');
             }
-            if (toggle) toggle.classList.add('active');
+            if (toggle) {
+                toggle.classList.add('active');
+                console.log('✅ Toggle activated');
+            }
         }
-    } else {
-        // Nav item biasa
-        const navItem = document.querySelector(`.nav-item[href="${currentPage}"]`);
-        if (navItem) navItem.classList.add('active');
+        return;
     }
-}
-
-// ==========================================
-// CLOSE ALL DROPDOWNS
-// ==========================================
-function closeAllDropdowns() {
-    document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
-        dropdown.classList.remove('active');
-    });
     
-    document.querySelectorAll('.dropdown-menu').forEach(menu => {
-        menu.classList.remove('show');
-        menu.style.display = 'none';
-    });
-    
-    document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
-        toggle.classList.remove('active');
-    });
+    // Nav-item biasa
+    const activeNavItem = document.querySelector(`.nav-item[href="${currentPage}"]`);
+    if (activeNavItem) {
+        activeNavItem.classList.add('active');
+    }
 }
 
 // ==========================================
 // HANDLE LOGOUT
 // ==========================================
 function handleLogout() {
-    if (confirm('Yakin ingin logout?')) {
-        localStorage.clear();
+    if (confirm('Apakah Anda yakin ingin keluar?')) {
+        localStorage.removeItem('itcc-current-user');
         window.location.href = 'login.html';
     }
-}
-
-// ==========================================
-// UPDATE USER INFO
-// ==========================================
-function updateDashboardUserInfo(user) {
-    const userName = document.getElementById('user-name');
-    const welcomeName = document.getElementById('welcome-name');
-    
-    if (userName) userName.textContent = user.displayName || user.username;
-    if (welcomeName) welcomeName.textContent = user.role || 'Desktop Support Engineer';
-}
-
-// ==========================================
-// LOAD ACTIVITY DATA
-// ==========================================
-async function loadActivityData() {
-    const container = document.getElementById('activity-list');
-    if (!container) return;
-    
-    const activities = [
-        {
-            title: 'Jadwal PM - BTSJAGINB24005',
-            badge: 'PM PROGRAM',
-            desc: 'Rencana Pemeliharaan Berkala • PIC: Arief',
-            date: '2026-06-08'
-        },
-        {
-            title: 'Jadwal PM - BTSJAGINB24001',
-            badge: 'PM PROGRAM',
-            desc: 'Rencana Pemeliharaan Berkala • PIC: Waluyo',
-            date: '2026-06-05'
-        },
-        {
-            title: 'Jadwal PM - BTSJAGINB23009',
-            badge: 'PM PROGRAM',
-            desc: 'Rencana Pemeliharaan Berkala • PIC: Risky Tri',
-            date: '2026-06-04'
-        }
-    ];
-
-    container.innerHTML = activities.map(act => `
-        <div class="activity-item">
-            <div class="activity-icon">
-                <i class="fa-regular fa-clock"></i>
-            </div>
-            <div class="activity-content">
-                <div class="activity-title">${act.title}</div>
-                <div class="activity-desc">${act.desc}</div>
-                <div class="activity-meta">
-                    <span class="activity-badge">${act.badge}</span>
-                    <span class="activity-date">
-                        <i class="fa-regular fa-calendar"></i>
-                        ${act.date}
-                    </span>
-                </div>
-            </div>
-        </div>
-    `).join('');
 }
