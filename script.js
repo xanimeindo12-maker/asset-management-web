@@ -181,7 +181,7 @@ function initAppPage() {
 }
 
 // ==========================================
-// LOAD SIDEBAR
+// LOAD SIDEBAR (IMPROVED TIMING)
 // ==========================================
 async function loadSidebar(user) {
     const container = document.getElementById('sidebar-container');
@@ -192,7 +192,7 @@ async function loadSidebar(user) {
         if (!response.ok) throw new Error('Sidebar not found');
         
         container.innerHTML = await response.text();
-        console.log('✅ Sidebar HTML loaded');
+        console.log('✅ Sidebar loaded');
 
         // Update user info
         const nameEl = container.querySelector('#user-name');
@@ -209,10 +209,10 @@ async function loadSidebar(user) {
             logoutBtn.addEventListener('click', handleLogout);
         }
 
-        // ✅ PENTING: Tunggu DOM siap, lalu setup sidebar
+        // Tunggu sebentar biar DOM benar-benar ready
         setTimeout(() => {
             setupSidebarInteractive();
-        }, 300);
+        }, 100);
         
     } catch (error) {
         console.error("❌ Sidebar error:", error);
@@ -272,22 +272,16 @@ function setupSidebarInteractive() {
 }
 
 // ==========================================
-// HIGHLIGHT MENU AKTIF (FIXED - PAKSA DROPDOWN TERBUKA)
+// HIGHLIGHT MENU AKTIF (SIMPLIFIED & ROBUST)
 // ==========================================
 function highlightActiveMenu() {
     const currentPage = window.location.pathname.split('/').pop();
     
     console.log('🎯 Highlighting menu for:', currentPage);
     
-    // Reset semua
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    
-    document.querySelectorAll('.dropdown-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    
+    // Reset semua dulu
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    document.querySelectorAll('.dropdown-item').forEach(item => item.classList.remove('active'));
     document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
         dropdown.classList.remove('active');
         const menu = dropdown.querySelector('.dropdown-menu');
@@ -299,123 +293,42 @@ function highlightActiveMenu() {
         if (toggle) toggle.classList.remove('active');
     });
     
-    // Case 1: Dashboard
+    // Dashboard
     if (currentPage === 'index.html' || currentPage === '') {
         const dashboardLink = document.querySelector('.nav-item[data-page="dashboard"]');
-        if (dashboardLink) {
-            dashboardLink.classList.add('active');
-        }
+        if (dashboardLink) dashboardLink.classList.add('active');
         return;
     }
     
-    // Case 2: Sub-page (inventory.html, dll)
-    const activeDropdownItem = document.querySelector(`.dropdown-item[href="${currentPage}"]`);
-    
-    if (activeDropdownItem) {
-        console.log('✅ Found active dropdown item:', activeDropdownItem.textContent.trim());
+    // Cari dropdown item yang cocok
+    const activeItem = document.querySelector(`.dropdown-item[href="${currentPage}"]`);
+    if (activeItem) {
+        console.log('✅ Found active item:', activeItem.textContent.trim());
         
-        // Highlight sub-item
-        activeDropdownItem.classList.add('active');
+        // Highlight item
+        activeItem.classList.add('active');
         
-        // ✅ PAKSA parent dropdown terbuka
-        const parentDropdown = activeDropdownItem.closest('.nav-dropdown');
+        // Buka parent dropdown
+        const parentDropdown = activeItem.closest('.nav-dropdown');
         if (parentDropdown) {
-            console.log('✅ Forcing parent dropdown open...');
-            
+            console.log('✅ Opening parent dropdown');
             parentDropdown.classList.add('active');
             
             const menu = parentDropdown.querySelector('.dropdown-menu');
             const toggle = parentDropdown.querySelector('.dropdown-toggle');
             
-            // ✅ PAKSA dengan inline style
+            // PAKSA buka dengan inline style
             if (menu) {
-                menu.classList.add('show');
                 menu.style.display = 'block';
-                menu.style.visibility = 'visible';
-                menu.style.opacity = '1';
-                console.log('✅ Menu forced open');
+                menu.classList.add('show');
+                console.log('✅ Menu display set to block');
             }
-            if (toggle) {
-                toggle.classList.add('active');
-                console.log('✅ Toggle activated');
-            }
+            if (toggle) toggle.classList.add('active');
         }
-        return;
-    }
-    
-    // Case 3: Nav-item biasa
-    const activeNavItem = document.querySelector(`.nav-item[href="${currentPage}"]`);
-    if (activeNavItem) {
-        activeNavItem.classList.add('active');
-    }
-}
-
-// ==========================================
-// HANDLE DROPDOWN CLICK (AUTO-NAVIGATE)
-// ==========================================
-function handleDropdownClick(dropdownId) {
-    const clickedDropdown = document.querySelector(`[data-dropdown="${dropdownId}"]`);
-    if (!clickedDropdown) {
-        console.log('❌ Dropdown not found:', dropdownId);
-        return;
-    }
-    
-    const dropdownMenu = clickedDropdown.querySelector('.dropdown-menu');
-    const dropdownToggle = clickedDropdown.querySelector('.dropdown-toggle');
-    const firstItem = dropdownMenu.querySelector('.dropdown-item');
-    
-    const isOpen = dropdownMenu.classList.contains('show');
-    
-    console.log('📂 Dropdown clicked. Currently open:', isOpen);
-    
-    // Close semua dropdown LAINNYA
-    document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
-        if (dropdown !== clickedDropdown) {
-            dropdown.classList.remove('active');
-            const menu = dropdown.querySelector('.dropdown-menu');
-            const toggle = dropdown.querySelector('.dropdown-toggle');
-            if (menu) {
-                menu.classList.remove('show');
-                menu.style.display = 'none';
-            }
-            if (toggle) toggle.classList.remove('active');
-        }
-    });
-    
-    // Close nav-items biasa
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    
-    if (isOpen) {
-        // Tutup dropdown yang diklik
-        console.log('🔽 Closing dropdown');
-        dropdownMenu.classList.remove('show');
-        dropdownMenu.style.display = 'none';
-        dropdownToggle.classList.remove('active');
-        clickedDropdown.classList.remove('active');
-        
-        // Kembalikan ke Dashboard
-        const dashboardLink = document.querySelector('.nav-item[data-page="dashboard"]');
-        if (dashboardLink) dashboardLink.classList.add('active');
     } else {
-        // ✅ Buka dropdown
-        console.log('🔼 Opening dropdown and will auto-navigate');
-        dropdownMenu.classList.add('show');
-        dropdownMenu.style.display = 'block';
-        dropdownToggle.classList.add('active');
-        clickedDropdown.classList.add('active');
-        
-        // ✅ AUTO-NAVIGATE ke item pertama setelah 400ms
-        if (firstItem) {
-            setTimeout(() => {
-                const href = firstItem.getAttribute('href');
-                if (href && href !== '#') {
-                    console.log('🚀 Auto-navigating to:', href);
-                    window.location.href = href;
-                }
-            }, 400);
-        }
+        // Nav item biasa
+        const navItem = document.querySelector(`.nav-item[href="${currentPage}"]`);
+        if (navItem) navItem.classList.add('active');
     }
 }
 
