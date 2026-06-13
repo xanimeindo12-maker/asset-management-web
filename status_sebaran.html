@@ -3,48 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semua Aset List - Management Aset</title>
+    <title>Status Sebaran Unit - IT DSE Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .location-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            margin-bottom: 16px;
+            border-left: 4px solid #4f46e5;
+        }
+        .location-card .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .location-card .name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        .location-card .count {
+            font-size: 24px;
+            font-weight: 800;
+            color: #4f46e5;
+        }
+        .location-card .details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            font-size: 12px;
+        }
+        .location-card .detail-item {
+            padding: 8px;
+            background: #f8f9ff;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .location-card .detail-label {
+            font-size: 10px;
+            color: #6b7280;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .location-card .detail-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-top: 4px;
+        }
+    </style>
 </head>
-<body>
+<body class="dashboard-body">
     <div id="sidebar-container"></div>
-    <main class="content">
+    <main class="main-content">
         <header class="top-bar">
-            <div class="breadcrumb">Inventory & Assets / <span class="current-page">Semua Aset List</span></div>
-            <div class="top-actions">
-                <button class="btn-primary"><i class="fa-solid fa-plus"></i> Tambah Aset</button>
+            <div class="page-title">
+                <h1>Status Sebaran Unit</h1>
+                <p class="subtitle">Distribution & Location Tracking</p>
             </div>
         </header>
 
-        <div id="page-content">
-            <div class="card">
-                <h3>Semua Aset List</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Asset Tag</th>
-                            <th>Type</th>
-                            <th>Assigned To</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>INV-001</td><td>CN004623</td><td>Laptop</td><td>HERUNAS</td><td><span class="status-badge active">In Use</span></td></tr>
-                        <!-- Data akan diisi via JS nanti -->
-                    </tbody>
-                </table>
+        <div class="filter-bar" style="margin-bottom:20px;">
+            <input type="text" placeholder="Cari lokasi, gedung, atau departemen..." style="flex:1; padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;">
+            <select class="filter-select" style="padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;">
+                <option>Semua Tipe</option>
+                <option>Gedung</option>
+                <option>Ruang</option>
+                <option>Site</option>
+            </select>
+        </div>
+
+        <div class="location-card">
+            <div class="header">
+                <div class="name"><i class="fa-solid fa-building"></i> GEDUNG A - LANTAI 1</div>
+                <div class="count">45 Units</div>
+            </div>
+            <div class="details">
+                <div class="detail-item">
+                    <div class="detail-label">Desktop</div>
+                    <div class="detail-value" style="color:#4f46e5">28</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Laptop</div>
+                    <div class="detail-value" style="color:#10b981">12</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Printer</div>
+                    <div class="detail-value" style="color:#f59e0b">5</div>
+                </div>
             </div>
         </div>
-    </main>
 
+        <div class="location-card" style="border-color:#10b981">
+            <div class="header">
+                <div class="name"><i class="fa-solid fa-building"></i> GEDUNG A - LANTAI 2</div>
+                <div class="count" style="color:#10b981">38 Units</div>
+            </div>
+            <div class="details">
+                <div class="detail-item">
+                    <div class="detail-label">Desktop</div>
+                    <div class="detail-value" style="color:#4f46e5">22</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Laptop</div>
+                    <div class="detail-value" style="color:#10b981">10</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Server</div>
+                    <div class="detail-value" style="color:#ef4444">6</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="location-card" style="border-color:#f59e0b">
+            <div class="header">
+                <div class="name"><i class="fa-solid fa-building"></i> GEDUNG B - LANTAI 1</div>
+                <div class="count" style="color:#f59e0b">32 Units</div>
+            </div>
+            <div class="details">
+                <div class="detail-item">
+                    <div class="detail-label">Desktop</div>
+                    <div class="detail-value" style="color:#4f46e5">18</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Laptop</div>
+                    <div class="detail-value" style="color:#10b981">11</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Printer</div>
+                    <div class="detail-value" style="color:#f59e0b">3</div>
+                </div>
+            </div>
+        </div>
+
+        <section class="table-section">
+            <div class="table-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <h3><i class="fa-solid fa-map-location-dot"></i> DETAILED DISTRIBUTION</h3>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>LOKASI</th>
+                        <th>DEPARTEMEN</th>
+                        <th>TOTAL UNIT</th>
+                        <th>DESKTOP</th>
+                        <th>LAPTOP</th>
+                        <th>PRINTER</th>
+                        <th>SERVER</th>
+                        <th>UTILIZATION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Gedung A - Lantai 1</strong></td>
+                        <td>IT Dept, Finance, HR</td>
+                        <td><strong>45</strong></td>
+                        <td>28</td>
+                        <td>12</td>
+                        <td>5</td>
+                        <td>-</td>
+                        <td><span class="badge-status active">92%</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gedung A - Lantai 2</strong></td>
+                        <td>Server Room, Engineering</td>
+                        <td><strong>38</strong></td>
+                        <td>22</td>
+                        <td>10</td>
+                        <td>-</td>
+                        <td>6</td>
+                        <td><span class="badge-status active">95%</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gedung B - Lantai 1</strong></td>
+                        <td>Procurement, Logistics</td>
+                        <td><strong>32</strong></td>
+                        <td>18</td>
+                        <td>11</td>
+                        <td>3</td>
+                        <td>-</td>
+                        <td><span class="badge-status available">88%</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>BTS Site JAGINB2</strong></td>
+                        <td>Field Operations</td>
+                        <td><strong>15</strong></td>
+                        <td>8</td>
+                        <td>5</td>
+                        <td>2</td>
+                        <td>-</td>
+                        <td><span class="badge-status active">100%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
     <script src="script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            initPage('unit-distribution'); // Sesuai data-page di sidebar
-        });
-    </script>
 </body>
 </html>
