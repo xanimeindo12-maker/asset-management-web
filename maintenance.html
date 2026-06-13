@@ -3,48 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semua Aset List - Management Aset</title>
+    <title>Jadwal Maintenance - IT DSE Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .status-pending { background: #fef3c7; color: #d97706; }
+        .status-completed { background: #d1fae5; color: #059669; }
+        .status-overdue { background: #fee2e2; color: #dc2626; }
+        .btn-action {
+            width: 30px; height: 30px; border: none; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; margin-right: 4px;
+        }
+        .btn-complete { background: #d1fae5; color: #059669; }
+        .btn-edit { background: #fef3c7; color: #d97706; }
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card-mini {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border-left: 4px solid #4f46e5;
+        }
+        .stat-card-mini.pending { border-color: #f59e0b; }
+        .stat-card-mini.completed { border-color: #10b981; }
+        .stat-card-mini.overdue { border-color: #ef4444; }
+        .stat-card-mini .label { font-size: 11px; color: #6b7280; font-weight: 600; text-transform: uppercase; }
+        .stat-card-mini .value { font-size: 28px; font-weight: 800; color: #1a1a1a; margin-top: 4px; }
+    </style>
 </head>
-<body>
+<body class="dashboard-body">
     <div id="sidebar-container"></div>
-    <main class="content">
+    <main class="main-content">
         <header class="top-bar">
-            <div class="breadcrumb">Inventory & Assets / <span class="current-page">Semua Aset List</span></div>
-            <div class="top-actions">
-                <button class="btn-primary"><i class="fa-solid fa-plus"></i> Tambah Aset</button>
+            <div class="page-title">
+                <h1>Jadwal Maintenance</h1>
+                <p class="subtitle">Preventive & Corrective Maintenance Schedule</p>
             </div>
+            <button class="btn-primary" onclick="alert('Form jadwal maintenance akan segera hadir!')">
+                <i class="fa-solid fa-plus"></i> TAMBAH JADWAL
+            </button>
         </header>
 
-        <div id="page-content">
-            <div class="card">
-                <h3>Semua Aset List</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Asset Tag</th>
-                            <th>Type</th>
-                            <th>Assigned To</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>INV-001</td><td>CN004623</td><td>Laptop</td><td>HERUNAS</td><td><span class="status-badge active">In Use</span></td></tr>
-                        <!-- Data akan diisi via JS nanti -->
-                    </tbody>
-                </table>
+        <div class="stats-row">
+            <div class="stat-card-mini pending">
+                <div class="label">PENDING PM</div>
+                <div class="value" style="color:#f59e0b">12</div>
+            </div>
+            <div class="stat-card-mini completed">
+                <div class="label">COMPLETED</div>
+                <div class="value" style="color:#10b981">48</div>
+            </div>
+            <div class="stat-card-mini overdue">
+                <div class="label">OVERDUE</div>
+                <div class="value" style="color:#ef4444">3</div>
+            </div>
+            <div class="stat-card-mini">
+                <div class="label">TOTAL SCHEDULE</div>
+                <div class="value">63</div>
             </div>
         </div>
-    </main>
 
+        <div class="filter-bar" style="margin-bottom:20px;">
+            <input type="text" placeholder="Cari aset, PIC, atau lokasi..." style="flex:1; padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;">
+            <select class="filter-select" style="padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;">
+                <option>Semua Status</option>
+                <option>Pending</option>
+                <option>Completed</option>
+                <option>Overdue</option>
+            </select>
+            <select class="filter-select" style="padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;">
+                <option>Semua Bulan</option>
+                <option>Juni 2026</option>
+                <option>Mei 2026</option>
+            </select>
+        </div>
+
+        <section class="table-section">
+            <div class="table-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <h3><i class="fa-solid fa-calendar-check"></i> MASTER MAINTENANCE SCHEDULE</h3>
+                <span class="badge live">LIVE SCHEDULE</span>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>NO</th>
+                        <th>ASSET</th>
+                        <th>JENIS MAINTENANCE</th>
+                        <th>TANGGAL JADWAL</th>
+                        <th>PIC</th>
+                        <th>LOKASI</th>
+                        <th>STATUS</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><strong>BTSJAGINB23009</strong></td>
+                        <td>Preventive Maintenance</td>
+                        <td>2026-06-04</td>
+                        <td>Risky Tri</td>
+                        <td>Gedung A R.4</td>
+                        <td><span class="status-badge status-pending">PENDING</span></td>
+                        <td>
+                            <button class="btn-action btn-complete" title="Mark Complete"><i class="fa-solid fa-check"></i></button>
+                            <button class="btn-action btn-edit" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><strong>BTSJAGINB24001</strong></td>
+                        <td>Preventive Maintenance</td>
+                        <td>2026-06-05</td>
+                        <td>Waluyo</td>
+                        <td>Gedung A R.1</td>
+                        <td><span class="status-badge status-pending">PENDING</span></td>
+                        <td>
+                            <button class="btn-action btn-complete"><i class="fa-solid fa-check"></i></button>
+                            <button class="btn-action btn-edit"><i class="fa-solid fa-pen"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><strong>IT-PC-TAF01</strong></td>
+                        <td>Corrective Maintenance</td>
+                        <td>2026-05-28</td>
+                        <td>Muhammad Taufik</td>
+                        <td>IT Dept</td>
+                        <td><span class="status-badge status-completed">COMPLETED</span></td>
+                        <td>
+                            <button class="btn-action btn-edit"><i class="fa-solid fa-pen"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td><strong>SRV-RACK-A01</strong></td>
+                        <td>Preventive Maintenance</td>
+                        <td>2026-05-20</td>
+                        <td>Arief</td>
+                        <td>Ruang Server Lt.2</td>
+                        <td><span class="status-badge status-overdue">OVERDUE</span></td>
+                        <td>
+                            <button class="btn-action btn-complete"><i class="fa-solid fa-check"></i></button>
+                            <button class="btn-action btn-edit"><i class="fa-solid fa-pen"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td><strong>LPT-ASTRA-100</strong></td>
+                        <td>Preventive Maintenance</td>
+                        <td>2026-06-08</td>
+                        <td>Wahyu</td>
+                        <td>Procurement</td>
+                        <td><span class="status-badge status-pending">PENDING</span></td>
+                        <td>
+                            <button class="btn-action btn-complete"><i class="fa-solid fa-check"></i></button>
+                            <button class="btn-action btn-edit"><i class="fa-solid fa-pen"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
     <script src="script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            initPage('maintenance-schedule'); // Sesuai data-page di sidebar
-        });
-    </script>
 </body>
 </html>
