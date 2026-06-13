@@ -194,6 +194,7 @@ async function loadSidebar(user) {
         if (!response.ok) throw new Error('Sidebar not found');
         
         container.innerHTML = await response.text();
+        console.log('✅ Sidebar loaded successfully');
 
         // Update user info di sidebar
         const nameEl = container.querySelector('#user-name');
@@ -210,8 +211,10 @@ async function loadSidebar(user) {
             logoutBtn.addEventListener('click', handleLogout);
         }
 
-        // ✅ SETUP SIDEBAR INTERACTIVE
-        setupSidebarInteractive();
+        // ✅ SETUP SIDEBAR INTERACTIVE - PENTING: Tunggu DOM siap
+        setTimeout(() => {
+            setupSidebarInteractive();
+        }, 100);
         
     } catch (error) {
         console.error("❌ Sidebar error:", error);
@@ -295,7 +298,10 @@ function highlightActiveMenu() {
         dropdown.classList.remove('active');
         const menu = dropdown.querySelector('.dropdown-menu');
         const toggle = dropdown.querySelector('.dropdown-toggle');
-        if (menu) menu.classList.remove('show');
+        if (menu) {
+            menu.classList.remove('show');
+            menu.style.display = 'none';
+        }
         if (toggle) toggle.classList.remove('active');
     });
     
@@ -319,7 +325,7 @@ function highlightActiveMenu() {
         // ✅ Highlight parent dropdown
         const parentDropdown = activeDropdownItem.closest('.nav-dropdown');
         if (parentDropdown) {
-            console.log('✅ Found parent dropdown, opening it...');
+            console.log('✅ Found parent dropdown, forcing open...');
             
             // ✅ PAKSA dropdown terbuka
             parentDropdown.classList.add('active');
@@ -327,19 +333,19 @@ function highlightActiveMenu() {
             const menu = parentDropdown.querySelector('.dropdown-menu');
             const toggle = parentDropdown.querySelector('.dropdown-toggle');
             
-            // ✅ Tambahkan class 'show' dengan delay kecil
-            setTimeout(() => {
-                if (menu) {
-                    menu.classList.add('show');
-                    menu.style.display = 'block'; // Force show
-                }
-                if (toggle) toggle.classList.add('active');
-            }, 100);
+            // ✅ Force show dengan delay
+            if (menu) {
+                menu.classList.add('show');
+                menu.style.display = 'block';
+            }
+            if (toggle) {
+                toggle.classList.add('active');
+            }
         }
         return;
     }
     
-    // Case 3: Halaman nav-item biasa (management_user.html, dll)
+    // Case 3: Halaman nav-item biasa
     const activeNavItem = document.querySelector(`.nav-item[href="${currentPage}"]`);
     if (activeNavItem) {
         activeNavItem.classList.add('active');
@@ -368,6 +374,7 @@ function handleDropdownClick(dropdownId) {
     if (isOpen) {
         // Tutup dropdown
         dropdownMenu.classList.remove('show');
+        dropdownMenu.style.display = 'none';
         dropdownToggle.classList.remove('active');
         clickedDropdown.classList.remove('active');
         
@@ -377,6 +384,7 @@ function handleDropdownClick(dropdownId) {
     } else {
         // Buka dropdown
         dropdownMenu.classList.add('show');
+        dropdownMenu.style.display = 'block';
         dropdownToggle.classList.add('active');
         clickedDropdown.classList.add('active');
         
@@ -402,6 +410,7 @@ function closeAllDropdowns() {
     
     document.querySelectorAll('.dropdown-menu').forEach(menu => {
         menu.classList.remove('show');
+        menu.style.display = 'none';
     });
     
     document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
