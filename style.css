@@ -893,8 +893,14 @@
     display: block;
 }
 /* ==========================================
-   MODERN LOGIN PAGE STYLES
+   MODERN LOGIN PAGE STYLES - FIXED
    ========================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 .modern-login-body {
     display: flex;
@@ -909,20 +915,20 @@
 .modern-login-card {
     background: white;
     border-radius: 24px;
-    padding: 48px 40px 32px;
+    padding: 40px 36px 28px;
     width: 100%;
-    max-width: 440px;
+    max-width: 420px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
     text-align: center;
 }
 
 .logo-container {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .hexagon {
-    width: 80px;
-    height: 80px;
+    width: 72px;
+    height: 72px;
     margin: 0 auto;
     background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
@@ -930,24 +936,24 @@
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 32px;
+    font-size: 28px;
 }
 
 .login-header h1 {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 800;
     color: #1a1a1a;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
 }
 
 .login-header .subtitle {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
     color: #6b7280;
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
 }
 
 .modern-form {
@@ -955,7 +961,8 @@
 }
 
 .input-group {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
+    width: 100%;
 }
 
 .input-group label {
@@ -964,19 +971,20 @@
     font-weight: 700;
     color: #374151;
     letter-spacing: 1px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     text-transform: uppercase;
 }
 
 .input-group input {
     width: 100%;
-    padding: 14px 16px;
+    padding: 12px 14px;
     border: 1.5px solid #e5e7eb;
     border-radius: 10px;
     font-size: 14px;
     font-family: 'Inter', sans-serif;
     transition: all 0.3s;
     background: #fafafa;
+    box-sizing: border-box;
 }
 
 .input-group input:focus {
@@ -990,12 +998,17 @@
     color: #9ca3af;
 }
 
+/* ✅ FIX: Password wrapper */
 .password-wrapper {
     position: relative;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .password-wrapper input {
-    padding-right: 48px;
+    width: 100%;
+    padding-right: 44px;
+    box-sizing: border-box;
 }
 
 .toggle-password {
@@ -1007,9 +1020,12 @@
     border: none;
     color: #9ca3af;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 15px;
     padding: 4px;
     transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .toggle-password:hover {
@@ -1018,19 +1034,20 @@
 
 .btn-masuk {
     width: 100%;
-    padding: 16px;
+    padding: 14px;
     background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     color: white;
     border: none;
-    border-radius: 12px;
-    font-size: 15px;
+    border-radius: 10px;
+    font-size: 14px;
     font-weight: 700;
     letter-spacing: 1.5px;
     cursor: pointer;
     transition: all 0.3s;
-    margin-top: 8px;
+    margin-top: 6px;
     font-family: 'Inter', sans-serif;
     box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    box-sizing: border-box;
 }
 
 .btn-masuk:hover {
@@ -1052,20 +1069,20 @@
 
 .login-message {
     text-align: center;
-    margin-top: 16px;
+    margin-top: 14px;
     font-size: 13px;
     font-weight: 500;
     min-height: 20px;
 }
 
 .login-footer {
-    margin-top: 32px;
-    padding-top: 20px;
+    margin-top: 28px;
+    padding-top: 18px;
     border-top: 1px solid #f3f4f6;
 }
 
 .login-footer p {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     color: #9ca3af;
     letter-spacing: 1.5px;
@@ -1074,7 +1091,7 @@
 /* Responsive */
 @media (max-width: 480px) {
     .modern-login-card {
-        padding: 36px 24px 24px;
+        padding: 32px 22px 22px;
         border-radius: 20px;
     }
 
@@ -1085,6 +1102,6 @@
     .hexagon {
         width: 64px;
         height: 64px;
-        font-size: 26px;
+        font-size: 24px;
     }
 }
