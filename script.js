@@ -325,15 +325,15 @@ function highlightActiveMenu() {
         // ✅ Highlight parent dropdown
         const parentDropdown = activeDropdownItem.closest('.nav-dropdown');
         if (parentDropdown) {
-            console.log('✅ Found parent dropdown, forcing open...');
+            console.log('✅ Found parent dropdown, keeping it open...');
             
-            // ✅ PAKSA dropdown terbuka
+            // ✅ PAKSA dropdown tetap terbuka
             parentDropdown.classList.add('active');
             
             const menu = parentDropdown.querySelector('.dropdown-menu');
             const toggle = parentDropdown.querySelector('.dropdown-toggle');
             
-            // ✅ Force show dengan delay
+            // ✅ Force show
             if (menu) {
                 menu.classList.add('show');
                 menu.style.display = 'block';
@@ -351,7 +351,6 @@ function highlightActiveMenu() {
         activeNavItem.classList.add('active');
     }
 }
-
 // ==========================================
 // HANDLE DROPDOWN CLICK (TETAP TERBUKA)
 // ==========================================
