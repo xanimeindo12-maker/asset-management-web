@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('📄 Current page:', currentPage);
 
     if (currentPage === 'login.html' || currentPage === 'login') {
-        console.log('🔐 Initializing LOGIN page...');
+        console.log(' Initializing LOGIN page...');
         initLoginPage();
     } 
     else if (currentPage === 'index.html' || currentPage === '' || currentPage === '/') {
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
-// HANDLE INDEX PAGE (REDIRECT LOGIC)
+// HANDLE INDEX PAGE
 // ==========================================
 function handleIndexPage() {
     const token = localStorage.getItem('asset_token');
@@ -155,7 +155,7 @@ function initLoginPage() {
 }
 
 // ==========================================
-// LOGIKA HALAMAN APP (DASHBOARD, DLL)
+// LOGIKA HALAMAN APP
 // ==========================================
 function initAppPage() {
     const token = localStorage.getItem('asset_token');
@@ -176,14 +176,12 @@ function initAppPage() {
     }
     
     loadSidebar(user);
-    
-    // Load data dashboard khusus
     updateDashboardUserInfo(user);
     loadActivityData();
 }
 
 // ==========================================
-// LOAD SIDEBAR DARI sidebar.html
+// LOAD SIDEBAR
 // ==========================================
 async function loadSidebar(user) {
     const container = document.getElementById('sidebar-container');
@@ -194,9 +192,9 @@ async function loadSidebar(user) {
         if (!response.ok) throw new Error('Sidebar not found');
         
         container.innerHTML = await response.text();
-        console.log('✅ Sidebar loaded successfully');
+        console.log('✅ Sidebar HTML loaded');
 
-        // Update user info di sidebar
+        // Update user info
         const nameEl = container.querySelector('#user-name');
         const roleEl = container.querySelector('.user-role');
         const avatarEl = container.querySelector('.user-avatar');
@@ -205,16 +203,16 @@ async function loadSidebar(user) {
         if (roleEl) roleEl.textContent = user.role || 'USER';
         if (avatarEl) avatarEl.textContent = (user.displayName || user.username || 'U').charAt(0).toUpperCase();
 
-        // Setup logout button
+        // Setup logout
         const logoutBtn = container.querySelector('.logout-btn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', handleLogout);
         }
 
-        // ✅ SETUP SIDEBAR INTERACTIVE - PENTING: Tunggu DOM siap
+        // ✅ PENTING: Tunggu DOM siap, lalu setup sidebar
         setTimeout(() => {
             setupSidebarInteractive();
-        }, 100);
+        }, 200);
         
     } catch (error) {
         console.error("❌ Sidebar error:", error);
@@ -223,12 +221,12 @@ async function loadSidebar(user) {
 }
 
 // ==========================================
-// SIDEBAR INTERACTIVE - FUNGSI UTAMA
+// SIDEBAR INTERACTIVE
 // ==========================================
 function setupSidebarInteractive() {
-    console.log('🎯 Setting up sidebar interactions...');
+    console.log(' Setting up sidebar interactions...');
     
-    // 1. Highlight menu aktif berdasarkan URL
+    // 1. Highlight menu aktif
     highlightActiveMenu();
     
     // 2. Setup dropdown toggle handlers
@@ -236,6 +234,7 @@ function setupSidebarInteractive() {
     dropdownToggles.forEach(toggle => {
         toggle.addEventListener('click', function(e) {
             e.preventDefault();
+            e.stopPropagation();
             
             const parentDropdown = this.closest('.nav-dropdown');
             const dropdownId = parentDropdown.getAttribute('data-dropdown');
@@ -248,13 +247,11 @@ function setupSidebarInteractive() {
     const dropdownItems = document.querySelectorAll('.dropdown-item');
     dropdownItems.forEach(item => {
         item.addEventListener('click', function() {
-            // Highlight item yang diklik
             document.querySelectorAll('.dropdown-item').forEach(i => {
                 i.classList.remove('active');
             });
             this.classList.add('active');
             
-            // Parent dropdown juga ikut aktif
             const parentDropdown = this.closest('.nav-dropdown');
             if (parentDropdown) {
                 parentDropdown.classList.add('active');
@@ -266,28 +263,23 @@ function setupSidebarInteractive() {
     const navItems = document.querySelectorAll('.nav-item');
     navItems.forEach(item => {
         item.addEventListener('click', function() {
-            // Reset semua
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('active'));
             document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
-            
-            // Highlight yang diklik
             this.classList.add('active');
         });
     });
 }
 
 // ==========================================
-// HIGHLIGHT MENU AKTIF BERDASARKAN URL (FIXED)
+// HIGHLIGHT MENU AKTIF (FIXED - PAKSA DROPDOWN TERBUKA)
 // ==========================================
 function highlightActiveMenu() {
     const currentPage = window.location.pathname.split('/').pop();
     
     console.log('🎯 Highlighting menu for:', currentPage);
-    console.log('🔍 Sidebar container exists:', !!document.getElementById('sidebar-container'));
-    console.log(' Nav dropdowns found:', document.querySelectorAll('.nav-dropdown').length);
     
-    // Reset semua active states
+    // Reset semua
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
     });
@@ -302,71 +294,64 @@ function highlightActiveMenu() {
         const toggle = dropdown.querySelector('.dropdown-toggle');
         if (menu) {
             menu.classList.remove('show');
-            menu.style.display = 'none'; // Force hide
+            menu.style.display = 'none';
         }
         if (toggle) toggle.classList.remove('active');
     });
     
-    // Case 1: Halaman utama (index.html / dashboard)
+    // Case 1: Dashboard
     if (currentPage === 'index.html' || currentPage === '') {
         const dashboardLink = document.querySelector('.nav-item[data-page="dashboard"]');
         if (dashboardLink) {
             dashboardLink.classList.add('active');
-            console.log('✅ Dashboard highlighted');
         }
         return;
     }
     
-    // Case 2: Halaman dengan dropdown (sub-page seperti inventory.html)
+    // Case 2: Sub-page (inventory.html, dll)
     const activeDropdownItem = document.querySelector(`.dropdown-item[href="${currentPage}"]`);
     
     if (activeDropdownItem) {
         console.log('✅ Found active dropdown item:', activeDropdownItem.textContent.trim());
         
-        // ✅ Highlight sub-item
+        // Highlight sub-item
         activeDropdownItem.classList.add('active');
         
-        // ✅ Highlight parent dropdown
+        // ✅ PAKSA parent dropdown terbuka
         const parentDropdown = activeDropdownItem.closest('.nav-dropdown');
         if (parentDropdown) {
-            console.log('✅ Found parent dropdown, forcing open...');
+            console.log('✅ Forcing parent dropdown open...');
             
-            // ✅ PAKSA dropdown terbuka dengan inline style
             parentDropdown.classList.add('active');
             
             const menu = parentDropdown.querySelector('.dropdown-menu');
             const toggle = parentDropdown.querySelector('.dropdown-toggle');
             
-            // ✅ Force show dengan inline style (bukan hanya class)
+            // ✅ PAKSA dengan inline style
             if (menu) {
                 menu.classList.add('show');
-                menu.style.display = 'block'; // INLINE STYLE - PAKSA TERBUKA
+                menu.style.display = 'block';
                 menu.style.visibility = 'visible';
                 menu.style.opacity = '1';
-                console.log('✅ Menu forced open with inline style');
+                console.log('✅ Menu forced open');
             }
             if (toggle) {
                 toggle.classList.add('active');
                 console.log('✅ Toggle activated');
             }
-        } else {
-            console.log('❌ Parent dropdown NOT found!');
         }
         return;
     }
     
-    // Case 3: Halaman nav-item biasa
+    // Case 3: Nav-item biasa
     const activeNavItem = document.querySelector(`.nav-item[href="${currentPage}"]`);
     if (activeNavItem) {
         activeNavItem.classList.add('active');
-        console.log('✅ Nav item highlighted:', activeNavItem.textContent.trim());
-    } else {
-        console.log('⚠️ No matching menu item found for:', currentPage);
     }
 }
 
 // ==========================================
-// HANDLE DROPDOWN CLICK (TETAP TERBUKA)
+// HANDLE DROPDOWN CLICK (AUTO-NAVIGATE)
 // ==========================================
 function handleDropdownClick(dropdownId) {
     const clickedDropdown = document.querySelector(`[data-dropdown="${dropdownId}"]`);
@@ -378,7 +363,7 @@ function handleDropdownClick(dropdownId) {
     
     const isOpen = dropdownMenu.classList.contains('show');
     
-    // Close semua dropdown LAINNYA (kecuali yang diklik)
+    // Close semua dropdown LAINNYA
     document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
         if (dropdown !== clickedDropdown) {
             dropdown.classList.remove('active');
@@ -394,9 +379,7 @@ function handleDropdownClick(dropdownId) {
     
     // Close nav-items biasa
     document.querySelectorAll('.nav-item').forEach(item => {
-        if (!item.closest('.nav-dropdown')) {
-            item.classList.remove('active');
-        }
+        item.classList.remove('active');
     });
     
     if (isOpen) {
@@ -410,7 +393,7 @@ function handleDropdownClick(dropdownId) {
         const dashboardLink = document.querySelector('.nav-item[data-page="dashboard"]');
         if (dashboardLink) dashboardLink.classList.add('active');
     } else {
-        // Buka dropdown
+        // ✅ Buka dropdown
         dropdownMenu.classList.add('show');
         dropdownMenu.style.display = 'block';
         dropdownToggle.classList.add('active');
@@ -421,6 +404,7 @@ function handleDropdownClick(dropdownId) {
             setTimeout(() => {
                 const href = firstItem.getAttribute('href');
                 if (href && href !== '#') {
+                    console.log('🚀 Auto-navigating to:', href);
                     window.location.href = href;
                 }
             }, 300);
@@ -457,7 +441,7 @@ function handleLogout() {
 }
 
 // ==========================================
-// UPDATE USER INFO DI DASHBOARD
+// UPDATE USER INFO
 // ==========================================
 function updateDashboardUserInfo(user) {
     const userName = document.getElementById('user-name');
@@ -513,48 +497,4 @@ async function loadActivityData() {
             </div>
         </div>
     `).join('');
-}
-// ==========================================
-// LOAD SIDEBAR DARI sidebar.html (FIXED TIMING)
-// ==========================================
-async function loadSidebar(user) {
-    const container = document.getElementById('sidebar-container');
-    if (!container) {
-        console.error('❌ Sidebar container not found!');
-        return;
-    }
-
-    try {
-        const response = await fetch('sidebar.html');
-        if (!response.ok) throw new Error('Sidebar not found');
-        
-        const sidebarHTML = await response.text();
-        container.innerHTML = sidebarHTML;
-        console.log('✅ Sidebar HTML loaded successfully');
-
-        // Update user info di sidebar
-        const nameEl = container.querySelector('#user-name');
-        const roleEl = container.querySelector('.user-role');
-        const avatarEl = container.querySelector('.user-avatar');
-        
-        if (nameEl) nameEl.textContent = user.displayName || user.username;
-        if (roleEl) roleEl.textContent = user.role || 'USER';
-        if (avatarEl) avatarEl.textContent = (user.displayName || user.username || 'U').charAt(0).toUpperCase();
-
-        // Setup logout button
-        const logoutBtn = container.querySelector('.logout-btn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', handleLogout);
-        }
-
-        // ✅ PENTING: Tunggu lebih lama biar DOM benar-benar siap
-        setTimeout(() => {
-            console.log('⏰ Timeout complete, setting up sidebar...');
-            setupSidebarInteractive();
-        }, 300); // Tambah delay dari 100ms ke 300ms
-        
-    } catch (error) {
-        console.error("❌ Sidebar error:", error);
-        container.innerHTML = '<p style="padding:20px;color:red;">Gagal memuat menu.</p>';
-    }
 }
