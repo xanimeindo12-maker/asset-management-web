@@ -278,12 +278,14 @@ function setupSidebarInteractive() {
 }
 
 // ==========================================
-// HIGHLIGHT MENU AKTIF BERDASARKAN URL
+// HIGHLIGHT MENU AKTIF BERDASARKAN URL (FIXED)
 // ==========================================
 function highlightActiveMenu() {
     const currentPage = window.location.pathname.split('/').pop();
     
     console.log('🎯 Highlighting menu for:', currentPage);
+    console.log('🔍 Sidebar container exists:', !!document.getElementById('sidebar-container'));
+    console.log(' Nav dropdowns found:', document.querySelectorAll('.nav-dropdown').length);
     
     // Reset semua active states
     document.querySelectorAll('.nav-item').forEach(item => {
@@ -300,7 +302,7 @@ function highlightActiveMenu() {
         const toggle = dropdown.querySelector('.dropdown-toggle');
         if (menu) {
             menu.classList.remove('show');
-            menu.style.display = 'none';
+            menu.style.display = 'none'; // Force hide
         }
         if (toggle) toggle.classList.remove('active');
     });
@@ -310,14 +312,16 @@ function highlightActiveMenu() {
         const dashboardLink = document.querySelector('.nav-item[data-page="dashboard"]');
         if (dashboardLink) {
             dashboardLink.classList.add('active');
+            console.log('✅ Dashboard highlighted');
         }
         return;
     }
     
     // Case 2: Halaman dengan dropdown (sub-page seperti inventory.html)
     const activeDropdownItem = document.querySelector(`.dropdown-item[href="${currentPage}"]`);
+    
     if (activeDropdownItem) {
-        console.log('✅ Found active dropdown item:', activeDropdownItem.textContent);
+        console.log('✅ Found active dropdown item:', activeDropdownItem.textContent.trim());
         
         // ✅ Highlight sub-item
         activeDropdownItem.classList.add('active');
@@ -325,22 +329,28 @@ function highlightActiveMenu() {
         // ✅ Highlight parent dropdown
         const parentDropdown = activeDropdownItem.closest('.nav-dropdown');
         if (parentDropdown) {
-            console.log('✅ Found parent dropdown, keeping it open...');
+            console.log('✅ Found parent dropdown, forcing open...');
             
-            // ✅ PAKSA dropdown tetap terbuka
+            // ✅ PAKSA dropdown terbuka dengan inline style
             parentDropdown.classList.add('active');
             
             const menu = parentDropdown.querySelector('.dropdown-menu');
             const toggle = parentDropdown.querySelector('.dropdown-toggle');
             
-            // ✅ Force show
+            // ✅ Force show dengan inline style (bukan hanya class)
             if (menu) {
                 menu.classList.add('show');
-                menu.style.display = 'block';
+                menu.style.display = 'block'; // INLINE STYLE - PAKSA TERBUKA
+                menu.style.visibility = 'visible';
+                menu.style.opacity = '1';
+                console.log('✅ Menu forced open with inline style');
             }
             if (toggle) {
                 toggle.classList.add('active');
+                console.log('✅ Toggle activated');
             }
+        } else {
+            console.log('❌ Parent dropdown NOT found!');
         }
         return;
     }
@@ -349,8 +359,12 @@ function highlightActiveMenu() {
     const activeNavItem = document.querySelector(`.nav-item[href="${currentPage}"]`);
     if (activeNavItem) {
         activeNavItem.classList.add('active');
+        console.log('✅ Nav item highlighted:', activeNavItem.textContent.trim());
+    } else {
+        console.log('⚠️ No matching menu item found for:', currentPage);
     }
 }
+
 // ==========================================
 // HANDLE DROPDOWN CLICK (TETAP TERBUKA)
 // ==========================================
@@ -499,4 +513,48 @@ async function loadActivityData() {
             </div>
         </div>
     `).join('');
+}
+// ==========================================
+// LOAD SIDEBAR DARI sidebar.html (FIXED TIMING)
+// ==========================================
+async function loadSidebar(user) {
+    const container = document.getElementById('sidebar-container');
+    if (!container) {
+        console.error('❌ Sidebar container not found!');
+        return;
+    }
+
+    try {
+        const response = await fetch('sidebar.html');
+        if (!response.ok) throw new Error('Sidebar not found');
+        
+        const sidebarHTML = await response.text();
+        container.innerHTML = sidebarHTML;
+        console.log('✅ Sidebar HTML loaded successfully');
+
+        // Update user info di sidebar
+        const nameEl = container.querySelector('#user-name');
+        const roleEl = container.querySelector('.user-role');
+        const avatarEl = container.querySelector('.user-avatar');
+        
+        if (nameEl) nameEl.textContent = user.displayName || user.username;
+        if (roleEl) roleEl.textContent = user.role || 'USER';
+        if (avatarEl) avatarEl.textContent = (user.displayName || user.username || 'U').charAt(0).toUpperCase();
+
+        // Setup logout button
+        const logoutBtn = container.querySelector('.logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', handleLogout);
+        }
+
+        // ✅ PENTING: Tunggu lebih lama biar DOM benar-benar siap
+        setTimeout(() => {
+            console.log('⏰ Timeout complete, setting up sidebar...');
+            setupSidebarInteractive();
+        }, 300); // Tambah delay dari 100ms ke 300ms
+        
+    } catch (error) {
+        console.error("❌ Sidebar error:", error);
+        container.innerHTML = '<p style="padding:20px;color:red;">Gagal memuat menu.</p>';
+    }
 }
