@@ -3,48 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semua Aset List - Management Aset</title>
+    <title>Daily Activity Logs - IT DSE Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-select {
+            padding: 10px 14px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            color: #374151;
+            cursor: pointer;
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+        .badge-cat {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-maintenance { background: #fee2e2; color: #dc2626; }
+        .badge-monitoring { background: #dbeafe; color: #2563eb; }
+        .badge-troubleshooting { background: #fef3c7; color: #d97706; }
+        .badge-service { background: #d1fae5; color: #059669; }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+        .page-header .left h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        .page-header .left p {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+        .btn-add {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-mini {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .stat-mini .label { font-size: 11px; color: #6b7280; font-weight: 600; }
+        .stat-mini .value { font-size: 24px; font-weight: 800; color: #1a1a1a; margin-top: 4px; }
+    </style>
 </head>
-<body>
+<body class="dashboard-body">
     <div id="sidebar-container"></div>
-    <main class="content">
-        <header class="top-bar">
-            <div class="breadcrumb">Inventory & Assets / <span class="current-page">Semua Aset List</span></div>
-            <div class="top-actions">
-                <button class="btn-primary"><i class="fa-solid fa-plus"></i> Tambah Aset</button>
+    <main class="main-content">
+        <div class="page-header">
+            <div class="left">
+                <h1>Daily Activity Logs</h1>
+                <p>Rekam jejak aktivitas harian IT Engineer</p>
             </div>
-        </header>
-
-        <div id="page-content">
-            <div class="card">
-                <h3>Semua Aset List</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Asset Tag</th>
-                            <th>Type</th>
-                            <th>Assigned To</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>INV-001</td><td>CN004623</td><td>Laptop</td><td>HERUNAS</td><td><span class="status-badge active">In Use</span></td></tr>
-                        <!-- Data akan diisi via JS nanti -->
-                    </tbody>
-                </table>
-            </div>
+            <button class="btn-add" onclick="alert('Fitur tambah log akan segera hadir!')">
+                <i class="fa-solid fa-plus"></i> TAMBAH LOG
+            </button>
         </div>
-    </main>
 
+        <div class="stats-row">
+            <div class="stat-mini"><div class="label">TOTAL LOGS</div><div class="value">24</div></div>
+            <div class="stat-mini"><div class="label">MAINTENANCE</div><div class="value" style="color:#dc2626">8</div></div>
+            <div class="stat-mini"><div class="label">MONITORING</div><div class="value" style="color:#2563eb">6</div></div>
+            <div class="stat-mini"><div class="label">SUPPORT</div><div class="value" style="color:#059669">10</div></div>
+        </div>
+
+        <div class="filter-bar">
+            <input type="text" placeholder="Cari aktivitas, nomor perangkat, atau engineer..." style="flex:1; padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;">
+            <select class="filter-select"><option>Semua Kategori</option><option>Maintenance</option><option>Monitoring</option><option>Support User</option></select>
+            <select class="filter-select"><option>Semua Bulan</option><option>Juni 2026</option><option>Mei 2026</option></select>
+        </div>
+
+        <section class="table-section">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>NO</th>
+                        <th>TANGGAL</th>
+                        <th>KATEGORI</th>
+                        <th>AKTIVITAS</th>
+                        <th>PERANGKAT</th>
+                        <th>ENGINEER</th>
+                        <th>WAKTU</th>
+                        <th>DURASI (MENIT)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>2026-06-08</td>
+                        <td><span class="badge-cat badge-maintenance">MAINTENANCE</span></td>
+                        <td>Preventive Maintenance Server Rack A</td>
+                        <td>SRV-RACK-A01</td>
+                        <td>Muhammad Taufik</td>
+                        <td>08:00 - 10:30</td>
+                        <td>150</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>2026-06-07</td>
+                        <td><span class="badge-cat badge-monitoring">MONITORING</span></td>
+                        <td>Cek performa network BTS JAGINB2</td>
+                        <td>BTS-JAGINB2-001</td>
+                        <td>Arief</td>
+                        <td>13:00 - 14:00</td>
+                        <td>60</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>2026-06-06</td>
+                        <td><span class="badge-cat badge-service">SUPPORT</span></td>
+                        <td>Instalasi software & konfigurasi user baru</td>
+                        <td>IT-PC-TAF02</td>
+                        <td>Wahyu</td>
+                        <td>09:00 - 11:00</td>
+                        <td>120</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>2026-06-05</td>
+                        <td><span class="badge-cat badge-troubleshooting">TROUBLESHOOTING</span></td>
+                        <td>Perbaikan koneksi jaringan down</td>
+                        <td>SW-CORE-01</td>
+                        <td>Muhammad Taufik</td>
+                        <td>15:30 - 17:00</td>
+                        <td>90</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>2026-06-04</td>
+                        <td><span class="badge-cat badge-maintenance">MAINTENANCE</span></td>
+                        <td>Pembersihan UPS & pengecekan baterai</td>
+                        <td>UPS-ROOM-B</td>
+                        <td>Arief</td>
+                        <td>10:00 - 11:30</td>
+                        <td>90</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
     <script src="script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            initPage('daily-logs'); // Sesuai data-page di sidebar
-        });
-    </script>
 </body>
 </html>
