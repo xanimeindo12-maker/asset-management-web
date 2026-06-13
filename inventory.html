@@ -3,30 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory - IT DSE Management</title>
+    <title>Semua Aset List - IT DSE Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="dashboard-body">
-    <!-- ✅ Sidebar di-load dari sidebar.html -->
     <div id="sidebar-container"></div>
     
     <main class="main-content">
         <header class="top-bar">
             <div class="page-title">
-                <h1>Semua Aset List</h1>
+                <h1>Daftar Inventaris Aset</h1>
+                <p class="subtitle">DATABASE INVENTARIS PERANGKAT DAN HARDWARE ORGANISASI</p>
+            </div>
+            <div class="top-actions">
+                <div class="system-status">
+                    <span class="status-dot"></span>
+                    <span>GAS Engine Connected</span>
+                </div>
+                <button class="btn-primary">
+                    <i class="fa-solid fa-plus"></i> TAMBAH PERANGKAT
+                </button>
             </div>
         </header>
-        
-        <section class="welcome-section">
-            <h2>Kelola Inventory & Aset</h2>
-            <p>Daftar semua aset IT dalam sistem.</p>
+
+        <!-- Search Bar -->
+        <section class="search-section">
+            <div class="search-box">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Cari aset (Host, Serial, Vendor, Model...)">
+            </div>
         </section>
-        
-        <!-- Konten inventory di sini -->
+
+        <!-- Master Inventory Table -->
+        <section class="table-section">
+            <div class="table-header">
+                <h3><i class="fa-solid fa-database"></i> MASTER INVENTORY STREAM</h3>
+                <span class="badge live">LIVE DATABASE</span>
+            </div>
+            
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>NO</th>
+                            <th>HOST NAME <i class="fa-solid fa-arrow-up"></i></th>
+                            <th>SERIAL NUMBER <i class="fa-solid fa-arrows-up-down"></i></th>
+                            <th>ASSIGNED TO <i class="fa-solid fa-arrows-up-down"></i></th>
+                            <th>STATE <i class="fa-solid fa-arrows-up-down"></i></th>
+                            <th>DEPARTMENT <i class="fa-solid fa-arrows-up-down"></i></th>
+                            <th>LOCATION <i class="fa-solid fa-arrows-up-down"></i></th>
+                            <th>WARRANTY EXPIRY <i class="fa-solid fa-arrows-up-down"></i></th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><strong>IT-PC-TAF01</strong></td>
+                            <td>SN-9812739218</td>
+                            <td>Taufik</td>
+                            <td><span class="badge-status active">IN USE</span></td>
+                            <td>IT Dept</td>
+                            <td>Gedung A R.4</td>
+                            <td>2027-12-14 <i class="fa-regular fa-eye"></i></td>
+                            <td class="action-buttons">
+                                <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><strong>LPT-ASTRA-100</strong></td>
+                            <td>SN-9579568117</td>
+                            <td>User 45</td>
+                            <td><span class="badge-status available">IN STOCK</span></td>
+                            <td>Procurement</td>
+                            <td>Gedung A R.1</td>
+                            <td>2027-08-15 <i class="fa-regular fa-eye"></i></td>
+                            <td class="action-buttons">
+                                <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><strong>LPT-ASTRA-101</strong></td>
+                            <td>SN-9245279805</td>
+                            <td>User 46</td>
+                            <td><span class="badge-status available">IN STOCK</span></td>
+                            <td>HR Dept</td>
+                            <td>Gedung A R.2</td>
+                            <td>2027-08-15 <i class="fa-regular fa-eye"></i></td>
+                            <td class="action-buttons">
+                                <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><strong>LPT-ASTRA-102</strong></td>
+                            <td>SN-9105350356</td>
+                            <td>User 47</td>
+                            <td><span class="badge-status available">IN STOCK</span></td>
+                            <td>Engineering</td>
+                            <td>Gedung A R.4</td>
+                            <td>2027-08-15 <i class="fa-regular fa-eye"></i></td>
+                            <td class="action-buttons">
+                                <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><strong>LPT-ASTRA-103</strong></td>
+                            <td>SN-9716618337</td>
+                            <td>User 48</td>
+                            <td><span class="badge-status available">IN STOCK</span></td>
+                            <td>IT Dept</td>
+                            <td>Gedung B R.1</td>
+                            <td>2027-08-15 <i class="fa-regular fa-eye"></i></td>
+                            <td class="action-buttons">
+                                <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </main>
-    
+
     <script src="script.js"></script>
 </body>
 </html>
