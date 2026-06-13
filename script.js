@@ -337,7 +337,7 @@ function highlightActiveMenu() {
 }
 
 // ==========================================
-// HANDLE DROPDOWN CLICK (TANPA AUTO-NAVIGATE)
+// HANDLE DROPDOWN CLICK (AUTO-NAVIGATE)
 // ==========================================
 function handleDropdownClick(dropdownId) {
     const clickedDropdown = document.querySelector(`[data-dropdown="${dropdownId}"]`);
@@ -345,25 +345,40 @@ function handleDropdownClick(dropdownId) {
     
     const dropdownMenu = clickedDropdown.querySelector('.dropdown-menu');
     const dropdownToggle = clickedDropdown.querySelector('.dropdown-toggle');
+    const firstItem = dropdownMenu.querySelector('.dropdown-item');
     
     const isOpen = dropdownMenu.classList.contains('show');
     
-    // Close semua dropdown lain
+    // Close semua dropdown DAN nav-item
     closeAllDropdowns();
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
     
     if (isOpen) {
-        // Kalau sudah terbuka, tutup saja
+        // Tutup dropdown
         dropdownMenu.classList.remove('show');
         dropdownToggle.classList.remove('active');
         clickedDropdown.classList.remove('active');
+        
+        // Kembalikan ke Dashboard
+        const dashboardLink = document.querySelector('.nav-item[data-page="dashboard"]');
+        if (dashboardLink) dashboardLink.classList.add('active');
     } else {
-        // Buka dropdown ini - JANGAN AUTO-NAVIGATE
+        // Buka dropdown
         dropdownMenu.classList.add('show');
         dropdownToggle.classList.add('active');
         clickedDropdown.classList.add('active');
         
-        // ❌ HAPUS bagian setTimeout yang auto-navigate
-        // User harus klik sub-item sendiri
+        // ✅ AUTO-NAVIGATE ke item pertama setelah 300ms
+        if (firstItem) {
+            setTimeout(() => {
+                const href = firstItem.getAttribute('href');
+                if (href && href !== '#') {
+                    window.location.href = href;
+                }
+            }, 300);
+        }
     }
 }
 
