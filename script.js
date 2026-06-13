@@ -279,7 +279,6 @@ function setupSidebarInteractive() {
 // ==========================================
 function highlightActiveMenu() {
     const currentPage = window.location.pathname.split('/').pop();
-    const currentPageName = currentPage.replace('.html', '') || 'index';
     
     console.log('🎯 Highlighting menu for:', currentPage);
     
@@ -309,18 +308,18 @@ function highlightActiveMenu() {
         return;
     }
     
-    // Case 2: Halaman dengan dropdown (sub-page)
+    // Case 2: Halaman dengan dropdown (sub-page seperti inventory.html)
     const activeDropdownItem = document.querySelector(`.dropdown-item[href="${currentPage}"]`);
     if (activeDropdownItem) {
-        // Highlight sub-item
+        // ✅ Highlight sub-item (jadi ungu)
         activeDropdownItem.classList.add('active');
         
-        // Highlight parent dropdown
+        // ✅ Highlight parent dropdown (jadi ungu juga)
         const parentDropdown = activeDropdownItem.closest('.nav-dropdown');
         if (parentDropdown) {
             parentDropdown.classList.add('active');
             
-            // Buka dropdown menu
+            // ✅ Buka dropdown menu biar user lihat sub-item yang aktif
             const menu = parentDropdown.querySelector('.dropdown-menu');
             const toggle = parentDropdown.querySelector('.dropdown-toggle');
             
@@ -330,7 +329,7 @@ function highlightActiveMenu() {
         return;
     }
     
-    // Case 3: Halaman nav-item biasa (kelola-tim, dll)
+    // Case 3: Halaman nav-item biasa (management_user.html, dll)
     const activeNavItem = document.querySelector(`.nav-item[href="${currentPage}"]`);
     if (activeNavItem) {
         activeNavItem.classList.add('active');
@@ -338,7 +337,7 @@ function highlightActiveMenu() {
 }
 
 // ==========================================
-// HANDLE DROPDOWN CLICK
+// HANDLE DROPDOWN CLICK (TANPA AUTO-NAVIGATE)
 // ==========================================
 function handleDropdownClick(dropdownId) {
     const clickedDropdown = document.querySelector(`[data-dropdown="${dropdownId}"]`);
@@ -346,7 +345,6 @@ function handleDropdownClick(dropdownId) {
     
     const dropdownMenu = clickedDropdown.querySelector('.dropdown-menu');
     const dropdownToggle = clickedDropdown.querySelector('.dropdown-toggle');
-    const firstItem = dropdownMenu.querySelector('.dropdown-item');
     
     const isOpen = dropdownMenu.classList.contains('show');
     
@@ -359,17 +357,13 @@ function handleDropdownClick(dropdownId) {
         dropdownToggle.classList.remove('active');
         clickedDropdown.classList.remove('active');
     } else {
-        // Buka dropdown ini
+        // Buka dropdown ini - JANGAN AUTO-NAVIGATE
         dropdownMenu.classList.add('show');
         dropdownToggle.classList.add('active');
         clickedDropdown.classList.add('active');
         
-        // Auto navigate ke item pertama setelah 300ms
-        if (firstItem) {
-            setTimeout(() => {
-                window.location.href = firstItem.getAttribute('href');
-            }, 300);
-        }
+        // ❌ HAPUS bagian setTimeout yang auto-navigate
+        // User harus klik sub-item sendiri
     }
 }
 
