@@ -3,146 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PICA - IT DSE Management</title>
+    <title>PICA - IT Command Center</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <style>
-        .priority-badge {
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-        .priority-high { background: #fee2e2; color: #dc2626; }
-        .priority-medium { background: #fef3c7; color: #d97706; }
-        .priority-low { background: #dbeafe; color: #2563eb; }
-        .status-open { background: #fef3c7; color: #d97706; }
-        .status-progress { background: #dbeafe; color: #2563eb; }
-        .status-closed { background: #d1fae5; color: #059669; }
-    </style>
 </head>
 <body class="dashboard-body">
     <div id="sidebar-container"></div>
+    
     <main class="main-content">
-        <header class="top-bar">
-            <div class="page-title">
+        <div class="page-header">
+            <div>
                 <h1>PICA - Problem Identification & Corrective Action</h1>
-                <p class="subtitle">Tracking & Resolution Management</p>
+                <p class="page-subtitle">Tracking & Resolution Management</p>
             </div>
-            <button class="btn-primary" onclick="alert('Form PICA akan segera hadir!')">
-                <i class="fa-solid fa-plus"></i> BUAT PICA
+            <button class="btn-primary">
+                <i class="fa-solid fa-plus-circle"></i> BUAT PICA
             </button>
-        </header>
+        </div>
 
-        <div class="filter-bar" style="margin-bottom:20px;">
-            <input type="text" placeholder="Cari problem, asset, atau PIC..." style="flex:1; padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;">
-            <select class="filter-select" style="padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;">
-                <option>Semua Priority</option>
-                <option>High</option>
-                <option>Medium</option>
-                <option>Low</option>
+        <div class="filter-panel">
+            <div class="search-box">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Cari problem, asset, atau PIC...">
+            </div>
+            <select class="filter-select">
+                <option value="">Semua Priority</option>
+                <option value="HIGH">HIGH</option>
+                <option value="MEDIUM">MEDIUM</option>
+                <option value="LOW">LOW</option>
             </select>
-            <select class="filter-select" style="padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;">
-                <option>Semua Status</option>
-                <option>Open</option>
-                <option>In Progress</option>
-                <option>Closed</option>
+            <select class="filter-select">
+                <option value="">Semua Status</option>
+                <option value="OPEN">OPEN</option>
+                <option value="IN PROGRESS">IN PROGRESS</option>
+                <option value="CLOSED">CLOSED</option>
             </select>
         </div>
 
-        <section class="table-section">
-            <div class="table-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-                <h3><i class="fa-solid fa-clipboard-list"></i> PICA TRACKING LIST</h3>
-                <span class="badge live">ACTIVE TRACKING</span>
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">
+                    <i class="fa-solid fa-clipboard-list" style="color: #6366f1;"></i>
+                    PICA TRACKING LIST
+                </div>
+                <span class="badge-live">ACTIVE TRACKING</span>
             </div>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>NO</th>
-                        <th>PICA ID</th>
-                        <th>PROBLEM DESCRIPTION</th>
-                        <th>ASSET</th>
-                        <th>PRIORITY</th>
-                        <th>PIC</th>
-                        <th>TANGGAL</th>
-                        <th>STATUS</th>
-                        <th>ACTION</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td><strong>PICA-2026-001</strong></td>
-                        <td>Server rack overheating - cooling system malfunction</td>
-                        <td>SRV-RACK-A01</td>
-                        <td><span class="priority-badge priority-high">HIGH</span></td>
-                        <td>Muhammad Taufik</td>
-                        <td>2026-06-01</td>
-                        <td><span class="status-badge status-progress">IN PROGRESS</span></td>
-                        <td>
-                            <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn-icon delete"><i class="fa-solid fa-check"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td><strong>PICA-2026-002</strong></td>
-                        <td>Network switch intermittent connectivity issue</td>
-                        <td>SW-CORE-01</td>
-                        <td><span class="priority-badge priority-high">HIGH</span></td>
-                        <td>Arief</td>
-                        <td>2026-06-03</td>
-                        <td><span class="status-badge status-open">OPEN</span></td>
-                        <td>
-                            <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn-icon delete"><i class="fa-solid fa-check"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td><strong>PICA-2026-003</strong></td>
-                        <td>Laptop battery degradation - replacement needed</td>
-                        <td>LPT-ASTRA-100</td>
-                        <td><span class="priority-badge priority-medium">MEDIUM</span></td>
-                        <td>Wahyu</td>
-                        <td>2026-05-28</td>
-                        <td><span class="status-badge status-closed">CLOSED</span></td>
-                        <td>
-                            <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td><strong>PICA-2026-004</strong></td>
-                        <td>Printer sharing configuration error</td>
-                        <td>PR-HP-LJ500</td>
-                        <td><span class="priority-badge priority-low">LOW</span></td>
-                        <td>Muhammad Taufik</td>
-                        <td>2026-05-25</td>
-                        <td><span class="status-badge status-closed">CLOSED</span></td>
-                        <td>
-                            <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td><strong>PICA-2026-005</strong></td>
-                        <td>UPS battery backup insufficient</td>
-                        <td>UPS-ROOM-B</td>
-                        <td><span class="priority-badge priority-medium">MEDIUM</span></td>
-                        <td>Arief</td>
-                        <td>2026-06-05</td>
-                        <td><span class="status-badge status-open">OPEN</span></td>
-                        <td>
-                            <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn-icon delete"><i class="fa-solid fa-check"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+            
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%; text-align: center;">NO</th>
+                            <th style="width: 12%;">PICA ID</th>
+                            <th style="width: 25%;">PROBLEM DESCRIPTION</th>
+                            <th style="width: 12%;">ASSET</th>
+                            <th style="width: 8%; text-align: center;">PRIORITY</th>
+                            <th style="width: 12%;">PIC</th>
+                            <th style="width: 10%;">TANGGAL</th>
+                            <th style="width: 10%; text-align: center;">STATUS</th>
+                            <th style="width: 8%; text-align: center;">ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody id="picaTableBody">
+                        <!-- Data will be loaded by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <div class="pagination-info">Showing 1 to 5 of 12 entries</div>
+                <div class="pagination-buttons">
+                    <button class="btn-nav" disabled>Previous</button>
+                    <button class="btn-page active">1</button>
+                    <button class="btn-page">2</button>
+                    <button class="btn-page">3</button>
+                    <button class="btn-nav">Next</button>
+                </div>
+            </div>
+        </div>
     </main>
+
     <script src="script.js"></script>
+    <script>
+        const picaData = [
+            { id: 1, picaId: 'PICA-2026-001', problem: 'Server rack overheating - cooling system malfunction', asset: 'SRV-RACK-A01', priority: 'HIGH', pic: 'Muhammad Taufik', date: '2026-06-01', status: 'IN PROGRESS' },
+            { id: 2, picaId: 'PICA-2026-002', problem: 'Network switch intermittent connectivity issue', asset: 'SW-CORE-01', priority: 'HIGH', pic: 'Arief', date: '2026-06-03', status: 'OPEN' },
+            { id: 3, picaId: 'PICA-2026-003', problem: 'Laptop battery degradation - replacement needed', asset: 'LPT-ASTRA-100', priority: 'MEDIUM', pic: 'Wahyu', date: '2026-05-28', status: 'CLOSED' },
+            { id: 4, picaId: 'PICA-2026-004', problem: 'Printer sharing configuration error', asset: 'PR-HP-LJ500', priority: 'LOW', pic: 'Muhammad Taufik', date: '2026-05-25', status: 'CLOSED' },
+            { id: 5, picaId: 'PICA-2026-005', problem: 'UPS battery backup insufficient', asset: 'UPS-ROOM-B', priority: 'MEDIUM', pic: 'Arief', date: '2026-06-05', status: 'OPEN' },
+        ];
+
+        const tableBody = document.getElementById('picaTableBody');
+        picaData.forEach((item, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="text-align: center; font-weight: 700; color: #d6d3d1;">${index + 1}</td>
+                <td style="font-weight: 700; font-size: 11px; color: #6366f1;">${item.picaId}</td>
+                <td style="font-size: 11px;">${item.problem}</td>
+                <td style="font-weight: 700; font-size: 11px;">${item.asset}</td>
+                <td style="text-align: center;">
+                    <span class="priority-badge ${item.priority === 'HIGH' ? 'priority-high' : item.priority === 'MEDIUM' ? 'priority-medium' : 'priority-low'}">
+                        ${item.priority}
+                    </span>
+                </td>
+                <td style="font-weight: 700; font-size: 11px;">${item.pic}</td>
+                <td style="font-size: 11px;">${item.date}</td>
+                <td style="text-align: center;">
+                    <span class="badge-status ${item.status === 'OPEN' ? 'action' : item.status === 'IN PROGRESS' ? 'available' : 'active'}">
+                        ${item.status}
+                    </span>
+                </td>
+                <td style="text-align: center;">
+                    <button class="btn-icon edit" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                    <button class="btn-icon" style="background: #d1fae5; color: #059669;" title="Close"><i class="fa-solid fa-check"></i></button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    </script>
 </body>
 </html>
