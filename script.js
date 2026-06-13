@@ -311,20 +311,30 @@ function highlightActiveMenu() {
     // Case 2: Halaman dengan dropdown (sub-page seperti inventory.html)
     const activeDropdownItem = document.querySelector(`.dropdown-item[href="${currentPage}"]`);
     if (activeDropdownItem) {
-        // ✅ Highlight sub-item (jadi ungu)
+        console.log('✅ Found active dropdown item:', activeDropdownItem.textContent);
+        
+        // ✅ Highlight sub-item
         activeDropdownItem.classList.add('active');
         
-        // ✅ Highlight parent dropdown (jadi ungu juga)
+        // ✅ Highlight parent dropdown
         const parentDropdown = activeDropdownItem.closest('.nav-dropdown');
         if (parentDropdown) {
+            console.log('✅ Found parent dropdown, opening it...');
+            
+            // ✅ PAKSA dropdown terbuka
             parentDropdown.classList.add('active');
             
-            // ✅ Buka dropdown menu biar user lihat sub-item yang aktif
             const menu = parentDropdown.querySelector('.dropdown-menu');
             const toggle = parentDropdown.querySelector('.dropdown-toggle');
             
-            if (menu) menu.classList.add('show');
-            if (toggle) toggle.classList.add('active');
+            // ✅ Tambahkan class 'show' dengan delay kecil
+            setTimeout(() => {
+                if (menu) {
+                    menu.classList.add('show');
+                    menu.style.display = 'block'; // Force show
+                }
+                if (toggle) toggle.classList.add('active');
+            }, 100);
         }
         return;
     }
