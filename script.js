@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('📄 Current page:', currentPage);
 
     if (currentPage === 'login.html' || currentPage === 'login') {
-        console.log(' Initializing LOGIN page...');
+        console.log('🔐 Initializing LOGIN page...');
         initLoginPage();
     } 
     else if (currentPage === 'index.html' || currentPage === '' || currentPage === '/') {
@@ -212,7 +212,7 @@ async function loadSidebar(user) {
         // ✅ PENTING: Tunggu DOM siap, lalu setup sidebar
         setTimeout(() => {
             setupSidebarInteractive();
-        }, 200);
+        }, 300);
         
     } catch (error) {
         console.error("❌ Sidebar error:", error);
@@ -224,50 +224,50 @@ async function loadSidebar(user) {
 // SIDEBAR INTERACTIVE
 // ==========================================
 function setupSidebarInteractive() {
-    console.log(' Setting up sidebar interactions...');
+    console.log('🎯 Setting up sidebar interactions...');
     
     // 1. Highlight menu aktif
     highlightActiveMenu();
     
-    // 2. Setup dropdown toggle handlers
-    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-    dropdownToggles.forEach(toggle => {
-        toggle.addEventListener('click', function(e) {
+    // 2. Setup dropdown toggle handlers - PAKAI DELEGATION
+    document.addEventListener('click', function(e) {
+        const toggle = e.target.closest('.dropdown-toggle');
+        if (toggle) {
             e.preventDefault();
             e.stopPropagation();
             
-            const parentDropdown = this.closest('.nav-dropdown');
+            const parentDropdown = toggle.closest('.nav-dropdown');
             const dropdownId = parentDropdown.getAttribute('data-dropdown');
             
             handleDropdownClick(dropdownId);
-        });
+        }
     });
     
     // 3. Setup dropdown item click handlers
-    const dropdownItems = document.querySelectorAll('.dropdown-item');
-    dropdownItems.forEach(item => {
-        item.addEventListener('click', function() {
+    document.addEventListener('click', function(e) {
+        const item = e.target.closest('.dropdown-item');
+        if (item) {
             document.querySelectorAll('.dropdown-item').forEach(i => {
                 i.classList.remove('active');
             });
-            this.classList.add('active');
+            item.classList.add('active');
             
-            const parentDropdown = this.closest('.nav-dropdown');
+            const parentDropdown = item.closest('.nav-dropdown');
             if (parentDropdown) {
                 parentDropdown.classList.add('active');
             }
-        });
+        }
     });
     
     // 4. Setup nav-item click handlers
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(item => {
-        item.addEventListener('click', function() {
+    document.addEventListener('click', function(e) {
+        const item = e.target.closest('.nav-item');
+        if (item && !item.closest('.nav-dropdown')) {
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('active'));
             document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
-            this.classList.add('active');
-        });
+            item.classList.add('active');
+        }
     });
 }
 
@@ -355,13 +355,18 @@ function highlightActiveMenu() {
 // ==========================================
 function handleDropdownClick(dropdownId) {
     const clickedDropdown = document.querySelector(`[data-dropdown="${dropdownId}"]`);
-    if (!clickedDropdown) return;
+    if (!clickedDropdown) {
+        console.log('❌ Dropdown not found:', dropdownId);
+        return;
+    }
     
     const dropdownMenu = clickedDropdown.querySelector('.dropdown-menu');
     const dropdownToggle = clickedDropdown.querySelector('.dropdown-toggle');
     const firstItem = dropdownMenu.querySelector('.dropdown-item');
     
     const isOpen = dropdownMenu.classList.contains('show');
+    
+    console.log('📂 Dropdown clicked. Currently open:', isOpen);
     
     // Close semua dropdown LAINNYA
     document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
@@ -384,6 +389,7 @@ function handleDropdownClick(dropdownId) {
     
     if (isOpen) {
         // Tutup dropdown yang diklik
+        console.log('🔽 Closing dropdown');
         dropdownMenu.classList.remove('show');
         dropdownMenu.style.display = 'none';
         dropdownToggle.classList.remove('active');
@@ -394,12 +400,13 @@ function handleDropdownClick(dropdownId) {
         if (dashboardLink) dashboardLink.classList.add('active');
     } else {
         // ✅ Buka dropdown
+        console.log('🔼 Opening dropdown and will auto-navigate');
         dropdownMenu.classList.add('show');
         dropdownMenu.style.display = 'block';
         dropdownToggle.classList.add('active');
         clickedDropdown.classList.add('active');
         
-        // ✅ AUTO-NAVIGATE ke item pertama setelah 300ms
+        // ✅ AUTO-NAVIGATE ke item pertama setelah 400ms
         if (firstItem) {
             setTimeout(() => {
                 const href = firstItem.getAttribute('href');
@@ -407,7 +414,7 @@ function handleDropdownClick(dropdownId) {
                     console.log('🚀 Auto-navigating to:', href);
                     window.location.href = href;
                 }
-            }, 300);
+            }, 400);
         }
     }
 }
