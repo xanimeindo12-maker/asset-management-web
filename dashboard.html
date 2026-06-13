@@ -3,41 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Management Aset</title>
+    <title>Dashboard - IT Command Center</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="dashboard-body">
     <div id="sidebar-container"></div>
-    <main class="content">
-        <header class="top-bar">
-            <div class="breadcrumb">Home / <span class="current-page">Dashboard Overview</span></div>
-            <div class="top-actions">
-                <button class="icon-btn"><i class="fa-solid fa-gear"></i></button>
-                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge-dot"></span></button>
-            </div>
-        </header>
+    
+    <main class="main-content">
+        <div class="top-nav">
+            <header class="top-header">
+                <div class="header-actions">
+                    <button class="icon-btn" id="themeBtn" title="Pengaturan Tema">
+                        <i class="fa-solid fa-gear"></i>
+                    </button>
+                    <button class="icon-btn" id="notificationBtn" title="Notifikasi">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+                    </button>
+                </div>
+            </header>
+        </div>
 
-        <div id="page-content">
-            <!-- ISI KONTEN DASHBOARD DI SINI -->
-            <div class="welcome-banner">
-                <h1>Welcome back, Desktop Support Engineer</h1>
+        <div class="content-area">
+            <div class="page-header">
+                <div>
+                    <h1>Dashboard Overview</h1>
+                    <p class="page-subtitle">Welcome back, Desktop Support Engineer</p>
+                </div>
+                <div class="system-status">
+                    <span class="status-dot"></span>
+                    System Online
+                </div>
+            </div>
+
+            <div class="welcome-card">
+                <h2>Welcome back, Desktop Support Engineer</h2>
                 <p>Here is the latest status of your IT DSE Operations.</p>
             </div>
 
-            <div class="kpi-grid">
-                <div class="kpi-card">
-                    <div class="kpi-icon blue"><i class="fa-solid fa-database"></i></div>
-                    <div class="kpi-info"><h3>TOTAL ASSETS</h3><div class="value">181</div><div class="sub">IT devices in system</div></div>
+            <div class="stats-grid-3">
+                <div class="stat-card clickable" onclick="window.location.href='inventory.html'">
+                    <div class="stat-icon purple pulse">
+                        <i class="fa-solid fa-database"></i>
+                    </div>
+                    <div>
+                        <p class="stat-label">Total Assets</p>
+                        <h3 class="stat-value">181</h3>
+                        <p class="stat-desc">IT devices in system</p>
+                    </div>
                 </div>
-                <div class="kpi-card">
-                    <div class="kpi-icon orange"><i class="fa-solid fa-wrench"></i></div>
-                    <div class="kpi-info"><h3>ACTIVE MAINTENANCE</h3><div class="value">3</div><div class="sub">Pending PM tasks</div></div>
+
+                <div class="stat-card clickable" onclick="window.location.href='maintenance.html'">
+                    <div class="stat-icon amber">
+                        <i class="fa-solid fa-wrench pulse"></i>
+                    </div>
+                    <div>
+                        <p class="stat-label">Active Maintenance</p>
+                        <h3 class="stat-value">3</h3>
+                        <p class="stat-desc">Pending PM tasks</p>
+                    </div>
                 </div>
-                <div class="kpi-card">
-                    <div class="kpi-icon green"><i class="fa-regular fa-clock"></i></div>
-                    <div class="kpi-info"><h3>PENDING PM (JUNI)</h3><div class="value">3</div><div class="sub">For the current month</div></div>
+
+                <div class="stat-card clickable" onclick="window.location.href='maintenance.html'">
+                    <div class="stat-icon emerald">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div>
+                        <p class="stat-label">Pending PM (Juni)</p>
+                        <h3 class="stat-value">3</h3>
+                        <p class="stat-desc">For the current month</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid-3">
+                <div class="stat-card-simple">
+                    <div class="stat-header">
+                        <p class="stat-label">ASSETS IN USE</p>
+                        <span class="badge-status active">Active</span>
+                    </div>
+                    <h3 class="stat-value-large">176</h3>
+                </div>
+
+                <div class="stat-card-simple">
+                    <div class="stat-header">
+                        <p class="stat-label">ASSETS IN STOK</p>
+                        <span class="badge-status available">Available</span>
+                    </div>
+                    <h3 class="stat-value-large">4</h3>
+                </div>
+
+                <div class="stat-card-simple">
+                    <div class="stat-header">
+                        <p class="stat-label">TOTAL BREAKDOWN</p>
+                        <span class="badge-status urgent">Urgent</span>
+                    </div>
+                    <h3 class="stat-value-large">1</h3>
+                </div>
+            </div>
+
+            <div class="stats-grid-2">
+                <div class="stat-card-simple" onclick="window.location.href='inventory.html'">
+                    <div class="stat-header">
+                        <p class="stat-label">EXPIRING WARRANTY</p>
+                        <span class="badge-status action">Action Req.</span>
+                    </div>
+                    <h3 class="stat-value-large">0</h3>
+                </div>
+
+                <div class="stat-card-simple" onclick="window.location.href='pa_kpi.html'">
+                    <div class="stat-header">
+                        <p class="stat-label">AVG WEEKLY PA</p>
+                        <span class="badge-status overall">Overall</span>
+                    </div>
+                    <h3 class="stat-value-large">100.00%</h3>
+                </div>
+            </div>
+
+            <div class="dashboard-grid-2">
+                <div class="card-large">
+                    <div class="card-header">
+                        <h4>
+                            <i class="fa-solid fa-chart-line text-primary"></i>
+                            Physical Availability (PA) Trend
+                        </h4>
+                        <button class="btn-export">Export</button>
+                    </div>
+                    <div class="chart-placeholder">
+                        <div class="chart-line-simple">
+                            <div class="chart-point" style="left: 0%; top: 20%"></div>
+                            <div class="chart-point" style="left: 33%; top: 15%"></div>
+                            <div class="chart-point" style="left: 66%; top: 25%"></div>
+                            <div class="chart-point active" style="left: 100%; top: 0%"></div>
+                        </div>
+                        <div class="chart-labels">
+                            <span>W1</span>
+                            <span>W2</span>
+                            <span>W3</span>
+                            <span>W4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-medium">
+                    <div class="card-header-simple">
+                        <h4>Upcoming PM Programs</h4>
+                        <span class="badge-primary">Pending PM</span>
+                    </div>
+                    <div class="pm-list">
+                        <div class="pm-item">
+                            <span class="pm-badge">PM</span>
+                            <div class="pm-info">
+                                <strong>BTSJAGINB23009</strong>
+                                <span>PIC: Risky Tri</span>
+                            </div>
+                            <span class="pm-date">2026-06-04</span>
+                        </div>
+                        <div class="pm-item">
+                            <span class="pm-badge">PM</span>
+                            <div class="pm-info">
+                                <strong>BTSJAGINB24001</strong>
+                                <span>PIC: Waluyo</span>
+                            </div>
+                            <span class="pm-date">2026-06-05</span>
+                        </div>
+                        <div class="pm-item">
+                            <span class="pm-badge">PM</span>
+                            <div class="pm-info">
+                                <strong>BTSJAGINB24005</strong>
+                                <span>PIC: Arief</span>
+                            </div>
+                            <span class="pm-date">2026-06-08</span>
+                        </div>
+                    </div>
+                    <button class="btn-full" onclick="window.location.href='maintenance.html'">
+                        View Full Schedule
+                    </button>
+                </div>
+            </div>
+
+            <div class="activity-feed">
+                <div class="feed-header">
+                    <div>
+                        <h3>
+                            <span class="badge-feed">Feed</span>
+                            Recent Activity Feed
+                        </h3>
+                        <p>Live summary of the latest 5 logs and preventive maintenance updates</p>
+                    </div>
+                    <a href="dailylogs.html" class="btn-link">
+                        View All Logs <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="feed-list" id="activityFeed">
+                    <!-- Activity items will be loaded by JavaScript -->
                 </div>
             </div>
         </div>
@@ -45,9 +206,61 @@
 
     <script src="script.js"></script>
     <script>
-        // INISIALISASI HALAMAN INI
-        document.addEventListener('DOMContentLoaded', () => {
-            initPage('dashboard'); // Ini akan load sidebar & highlight menu
+        // Sample activity data
+        const activities = [
+            {
+                type: 'maintenance',
+                title: 'Jadwal PM - BTSJAGINB24005',
+                desc: 'Rencana Pemeliharaan Berkala • PIC: Arief',
+                badge: 'PM PROGRAM',
+                date: '2026-06-08',
+                meta: 'PREVENTIVE PM (PENDING)'
+            },
+            {
+                type: 'maintenance',
+                title: 'Jadwal PM - BTSJAGINB24001',
+                desc: 'Rencana Pemeliharaan Berkala • PIC: Waluyo',
+                badge: 'PM PROGRAM',
+                date: '2026-06-05',
+                meta: 'PREVENTIVE PM (PENDING)'
+            },
+            {
+                type: 'log',
+                title: 'SERVICE - BTSJKOPCU22039',
+                desc: 'MUHAMMAD REWA DEVARA • PIC: MUHAMMAD TAUFIK',
+                badge: 'SERVICE',
+                date: '02/05/2026',
+                meta: '15 Min'
+            }
+        ];
+
+        // Render activity feed
+        const feedContainer = document.getElementById('activityFeed');
+        activities.forEach(activity => {
+            const item = document.createElement('div');
+            item.className = 'feed-item';
+            item.innerHTML = `
+                <div class="feed-left">
+                    <div class="feed-icon ${activity.type === 'log' ? 'blue' : 'amber'}">
+                        <i class="fa-solid ${activity.type === 'log' ? 'fa-history' : 'fa-clock'}"></i>
+                    </div>
+                    <div class="feed-content">
+                        <div class="feed-title">
+                            ${activity.title}
+                            <span class="feed-badge ${activity.badge === 'SERVICE' ? 'sky' : 'amber'}">${activity.badge}</span>
+                        </div>
+                        <p class="feed-desc">${activity.desc}</p>
+                    </div>
+                </div>
+                <div class="feed-right">
+                    <div class="feed-date">
+                        <i class="fa-regular fa-calendar"></i>
+                        ${activity.date}
+                    </div>
+                    <span class="feed-meta">${activity.meta}</span>
+                </div>
+            `;
+            feedContainer.appendChild(item);
         });
     </script>
 </body>
