@@ -3,109 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peminjaman Aset - IT DSE Management</title>
+    <title>Peminjaman Aset - IT Command Center</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <style>
-        .status-badge {
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-        .status-active { background: #d1fae5; color: #059669; }
-        .status-overdue { background: #fee2e2; color: #dc2626; }
-        .status-returned { background: #f3f4f6; color: #6b7280; }
-        .btn-action {
-            width: 30px; height: 30px; border: none; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; margin-right: 4px;
-        }
-        .btn-return { background: #d1fae5; color: #059669; }
-        .btn-edit { background: #fef3c7; color: #d97706; }
-        .btn-delete { background: #fee2e2; color: #dc2626; }
-        .btn-add {
-            padding: 10px 20px; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px;
-        }
-    </style>
 </head>
 <body class="dashboard-body">
     <div id="sidebar-container"></div>
+    
     <main class="main-content">
-        <header class="top-bar">
-            <div class="page-title">
+        <div class="page-header">
+            <div>
                 <h1>Peminjaman Aset</h1>
-                <p class="subtitle">Kelola peminjaman perangkat & aksesoris</p>
+                <p class="page-subtitle">Manajemen Peminjaman Perangkat dan Aksesoris</p>
             </div>
-            <button class="btn-add" onclick="alert('Form peminjaman akan segera hadir!')">
-                <i class="fa-solid fa-plus"></i> CATAT PEMINJAMAN
+            <button class="btn-primary">
+                <i class="fa-solid fa-plus-circle"></i> CATAT PEMINJAMAN
             </button>
-        </header>
-
-        <div class="filter-bar" style="margin-bottom:20px;">
-            <input type="text" placeholder="Cari peminjam, aset, atau departemen..." style="flex:1; padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;">
-            <select class="filter-select" style="padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;"><option>Semua Status</option><option>Dipinjam</option><option>Terlambat</option><option>Dikembalikan</option></select>
         </div>
 
-        <section class="table-section">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>NO</th>
-                        <th>TANGGAL PINJAM</th>
-                        <th>ASET</th>
-                        <th>PEMINJAM</th>
-                        <th>DEPARTEMEN</th>
-                        <th>ESTIMASI KEMBALI</th>
-                        <th>STATUS</th>
-                        <th>ACTION</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>2026-06-01</td>
-                        <td><strong>LPT-ASTRA-100</strong></td>
-                        <td>User 45</td>
-                        <td>Procurement</td>
-                        <td>2026-06-15</td>
-                        <td><span class="status-badge status-active">DIPINJAM</span></td>
-                        <td>
-                            <button class="btn-action btn-return" title="Kembalikan"><i class="fa-solid fa-rotate-left"></i></button>
-                            <button class="btn-action btn-edit" title="Edit"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn-action btn-delete" title="Hapus"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>2026-05-20</td>
-                        <td><strong>IT-PC-TAF01</strong></td>
-                        <td>Taufik</td>
-                        <td>IT Dept</td>
-                        <td>2026-05-27</td>
-                        <td><span class="status-badge status-overdue">TERLAMBAT</span></td>
-                        <td>
-                            <button class="btn-action btn-return"><i class="fa-solid fa-rotate-left"></i></button>
-                            <button class="btn-action btn-edit"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn-action btn-delete"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>2026-06-05</td>
-                        <td><strong>SW-CORE-01</strong></td>
-                        <td>Arief</td>
-                        <td>IT Dept</td>
-                        <td>2026-06-08</td>
-                        <td><span class="status-badge status-returned">DIKEMBALIKAN</span></td>
-                        <td>
-                            <button class="btn-action btn-edit"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn-action btn-delete"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+        <div class="filter-panel">
+            <div class="search-box">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Cari peminjam, aset, atau departemen...">
+            </div>
+            <select class="filter-select">
+                <option value="">Semua Status</option>
+                <option value="DIPINJAM">DIPINJAM</option>
+                <option value="TERLAMBAT">TERLAMBAT</option>
+                <option value="DIKEMBALIKAN">DIKEMBALIKAN</option>
+            </select>
+        </div>
+
+        <div class="stats-grid-3" style="margin-bottom: 24px;">
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <i class="fa-solid fa-hand-holding"></i>
+                </div>
+                <div>
+                    <p class="stat-label">Total Dipinjam</p>
+                    <h3 class="stat-value">24</h3>
+                    <p class="stat-desc">Active loans</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon rose">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div>
+                    <p class="stat-label">Terlambat</p>
+                    <h3 class="stat-value">3</h3>
+                    <p class="stat-desc">Overdue items</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon emerald">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </div>
+                <div>
+                    <p class="stat-label">Dikembalikan</p>
+                    <h3 class="stat-value">156</h3>
+                    <p class="stat-desc">Returned items</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">
+                    <i class="fa-solid fa-clipboard-list" style="color: #6366f1;"></i>
+                    MASTER ASSET LENDING
+                </div>
+                <span class="badge-live">LIVE DATA</span>
+            </div>
+            
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%; text-align: center;">NO</th>
+                            <th style="width: 12%;">TANGGAL PINJAM</th>
+                            <th style="width: 15%;">ASET</th>
+                            <th style="width: 15%;">PEMINJAM</th>
+                            <th style="width: 12%;">DEPARTEMEN</th>
+                            <th style="width: 12%;">ESTIMASI KEMBALI</th>
+                            <th style="width: 10%; text-align: center;">STATUS</th>
+                            <th style="width: 19%; text-align: center;">ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody id="borrowingsTableBody">
+                        <!-- Data will be loaded by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <div class="pagination-info">Showing 1 to 10 of 24 entries</div>
+                <div class="pagination-buttons">
+                    <button class="btn-nav" disabled>Previous</button>
+                    <button class="btn-page active">1</button>
+                    <button class="btn-page">2</button>
+                    <button class="btn-page">3</button>
+                    <button class="btn-nav">Next</button>
+                </div>
+            </div>
+        </div>
     </main>
+
     <script src="script.js"></script>
+    <script>
+        const borrowingsData = [
+            { id: 1, date: '2026-06-01', asset: 'LPT-ASTRA-100', borrower: 'User 45', dept: 'Procurement', returnDate: '2026-06-15', status: 'DIPINJAM' },
+            { id: 2, date: '2026-05-20', asset: 'IT-PC-TAF01', borrower: 'Taufik', dept: 'IT Dept', returnDate: '2026-05-27', status: 'TERLAMBAT' },
+            { id: 3, date: '2026-06-05', asset: 'SW-CORE-01', borrower: 'Arief', dept: 'IT Dept', returnDate: '2026-06-08', status: 'DIKEMBALIKAN' },
+        ];
+
+        const tableBody = document.getElementById('borrowingsTableBody');
+        borrowingsData.forEach((item, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="text-align: center; font-weight: 700; color: #d6d3d1;">${index + 1}</td>
+                <td style="font-weight: 900; font-size: 11px;">${item.date}</td>
+                <td style="font-weight: 700; font-size: 11px;">${item.asset}</td>
+                <td style="font-weight: 700; font-size: 11px;">${item.borrower}</td>
+                <td style="font-size: 11px;">${item.dept}</td>
+                <td style="font-family: monospace; font-size: 11px;">${item.returnDate}</td>
+                <td style="text-align: center;">
+                    <span class="badge-status ${item.status === 'DIPINJAM' ? 'active' : item.status === 'TERLAMBAT' ? 'urgent' : 'available'}">
+                        ${item.status}
+                    </span>
+                </td>
+                <td style="text-align: center;">
+                    <button class="btn-icon edit" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                    <button class="btn-icon" style="background: #d1fae5; color: #059669;" title="Kembalikan"><i class="fa-solid fa-rotate-left"></i></button>
+                    <button class="btn-icon delete" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    </script>
 </body>
 </html>
