@@ -3,48 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semua Aset List - Management Aset</title>
+    <title>PICA - IT DSE Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .priority-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .priority-high { background: #fee2e2; color: #dc2626; }
+        .priority-medium { background: #fef3c7; color: #d97706; }
+        .priority-low { background: #dbeafe; color: #2563eb; }
+        .status-open { background: #fef3c7; color: #d97706; }
+        .status-progress { background: #dbeafe; color: #2563eb; }
+        .status-closed { background: #d1fae5; color: #059669; }
+    </style>
 </head>
-<body>
+<body class="dashboard-body">
     <div id="sidebar-container"></div>
-    <main class="content">
+    <main class="main-content">
         <header class="top-bar">
-            <div class="breadcrumb">Inventory & Assets / <span class="current-page">Semua Aset List</span></div>
-            <div class="top-actions">
-                <button class="btn-primary"><i class="fa-solid fa-plus"></i> Tambah Aset</button>
+            <div class="page-title">
+                <h1>PICA - Problem Identification & Corrective Action</h1>
+                <p class="subtitle">Tracking & Resolution Management</p>
             </div>
+            <button class="btn-primary" onclick="alert('Form PICA akan segera hadir!')">
+                <i class="fa-solid fa-plus"></i> BUAT PICA
+            </button>
         </header>
 
-        <div id="page-content">
-            <div class="card">
-                <h3>Semua Aset List</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Asset Tag</th>
-                            <th>Type</th>
-                            <th>Assigned To</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>INV-001</td><td>CN004623</td><td>Laptop</td><td>HERUNAS</td><td><span class="status-badge active">In Use</span></td></tr>
-                        <!-- Data akan diisi via JS nanti -->
-                    </tbody>
-                </table>
-            </div>
+        <div class="filter-bar" style="margin-bottom:20px;">
+            <input type="text" placeholder="Cari problem, asset, atau PIC..." style="flex:1; padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;">
+            <select class="filter-select" style="padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;">
+                <option>Semua Priority</option>
+                <option>High</option>
+                <option>Medium</option>
+                <option>Low</option>
+            </select>
+            <select class="filter-select" style="padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:13px;">
+                <option>Semua Status</option>
+                <option>Open</option>
+                <option>In Progress</option>
+                <option>Closed</option>
+            </select>
         </div>
-    </main>
 
+        <section class="table-section">
+            <div class="table-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <h3><i class="fa-solid fa-clipboard-list"></i> PICA TRACKING LIST</h3>
+                <span class="badge live">ACTIVE TRACKING</span>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>NO</th>
+                        <th>PICA ID</th>
+                        <th>PROBLEM DESCRIPTION</th>
+                        <th>ASSET</th>
+                        <th>PRIORITY</th>
+                        <th>PIC</th>
+                        <th>TANGGAL</th>
+                        <th>STATUS</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><strong>PICA-2026-001</strong></td>
+                        <td>Server rack overheating - cooling system malfunction</td>
+                        <td>SRV-RACK-A01</td>
+                        <td><span class="priority-badge priority-high">HIGH</span></td>
+                        <td>Muhammad Taufik</td>
+                        <td>2026-06-01</td>
+                        <td><span class="status-badge status-progress">IN PROGRESS</span></td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-icon delete"><i class="fa-solid fa-check"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><strong>PICA-2026-002</strong></td>
+                        <td>Network switch intermittent connectivity issue</td>
+                        <td>SW-CORE-01</td>
+                        <td><span class="priority-badge priority-high">HIGH</span></td>
+                        <td>Arief</td>
+                        <td>2026-06-03</td>
+                        <td><span class="status-badge status-open">OPEN</span></td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-icon delete"><i class="fa-solid fa-check"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><strong>PICA-2026-003</strong></td>
+                        <td>Laptop battery degradation - replacement needed</td>
+                        <td>LPT-ASTRA-100</td>
+                        <td><span class="priority-badge priority-medium">MEDIUM</span></td>
+                        <td>Wahyu</td>
+                        <td>2026-05-28</td>
+                        <td><span class="status-badge status-closed">CLOSED</span></td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td><strong>PICA-2026-004</strong></td>
+                        <td>Printer sharing configuration error</td>
+                        <td>PR-HP-LJ500</td>
+                        <td><span class="priority-badge priority-low">LOW</span></td>
+                        <td>Muhammad Taufik</td>
+                        <td>2026-05-25</td>
+                        <td><span class="status-badge status-closed">CLOSED</span></td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td><strong>PICA-2026-005</strong></td>
+                        <td>UPS battery backup insufficient</td>
+                        <td>UPS-ROOM-B</td>
+                        <td><span class="priority-badge priority-medium">MEDIUM</span></td>
+                        <td>Arief</td>
+                        <td>2026-06-05</td>
+                        <td><span class="status-badge status-open">OPEN</span></td>
+                        <td>
+                            <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-icon delete"><i class="fa-solid fa-check"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
     <script src="script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            initPage('pica'); // Sesuai data-page di sidebar
-        });
-    </script>
 </body>
 </html>
