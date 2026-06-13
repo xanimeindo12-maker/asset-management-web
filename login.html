@@ -5,66 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - IT Command Center</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="modern-login-body">
-    <div class="modern-login-card">
-        <!-- Logo Hexagonal -->
-        <div class="logo-container">
-            <div class="hexagon">
-                <i class="fa-solid fa-tower-broadcast"></i>
-            </div>
-        </div>
-
-        <!-- Header -->
-        <div class="login-header">
-            <h1>IT COMMAND CENTER</h1>
-            <p class="subtitle">OPERATIONAL HUB</p>
-        </div>
-
-        <!-- Form Login -->
-        <form id="login-form" class="modern-form">
-            <div class="input-group">
-                <label for="username">USERNAME</label>
-                <input 
-                    type="text" 
-                    id="username" 
-                    placeholder="Contoh: administrator" 
-                    autocomplete="username"
-                    required
-                >
-            </div>
-
-            <div class="input-group">
-                <label for="password">PASSWORD</label>
-                <div class="password-wrapper">
-                    <input 
-                        type="password" 
-                        id="password" 
-                        placeholder="Masukkan kata sandi..." 
-                        autocomplete="current-password"
-                        required
-                    >
-                    <button type="button" class="toggle-password" id="togglePassword">
-                        <i class="fa-regular fa-eye"></i>
-                    </button>
+<body class="login-body">
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="logo-wrapper">
+                    <div class="logo-hexagon">
+                        <i class="fa-solid fa-tower-broadcast"></i>
+                    </div>
                 </div>
+                <h1 class="login-title">IT COMMAND CENTER</h1>
+                <p class="login-subtitle">Operational Hub</p>
             </div>
-
-            <button type="submit" id="btn-login" class="btn-masuk">
-                MASUK
-            </button>
-
-            <p id="login-msg" class="login-message"></p>
-        </form>
-
-        <!-- Footer -->
-        <div class="login-footer">
-            <p>COPYRIGHT © IT ENGINEER V1.0</p>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username</label>
+                    <input type="text" id="username" class="form-input" placeholder="Enter username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter password" required>
+                </div>
+                
+                <button type="submit" class="btn-login">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    Sign In
+                </button>
+            </form>
+            
+            <div id="loginError" class="error-message" style="display: none;"></div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple authentication (in production, this would call an API)
+            if (username && password) {
+                const user = {
+                    name: username,
+                    role: 'Administrator'
+                };
+                
+                localStorage.setItem('itcc-current-user', JSON.stringify(user));
+                window.location.href = 'dashboard.html';
+            } else {
+                const errorDiv = document.getElementById('loginError');
+                errorDiv.textContent = 'Username dan password wajib diisi!';
+                errorDiv.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>
